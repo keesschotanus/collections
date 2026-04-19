@@ -96,3 +96,11 @@ size_t list_size(list l)
 {
 	return l ? l->number_of_elements : 0;
 }
+
+void sort_list(list l, int (*cmp)(const void *, const void *))
+{
+	if (l == NULL || cmp == NULL)
+		return;
+
+	qsort(l->data, l->number_of_elements, l->element_size, cmp);
+}

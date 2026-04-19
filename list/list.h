@@ -80,4 +80,14 @@ void list_free(list l);
  */
 size_t list_size(list l);
 
+/**
+ * @brief Sorts the elements in the list using the provided comparison function.
+ *
+ * @param l Pointer to the list.
+ * @param cmp Pointer to the comparison function. Must not be NULL.
+ *  The function should return a negative value if the first argument is less than the second,
+ *  zero if they are equal, and a positive value if the first argument is greater than the second.
+ */
+void sort_list(list l, int (*cmp)(const void *, const void *));
+
 #endif

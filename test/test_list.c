@@ -16,6 +16,7 @@ static void test_list_with_zero_capacity(void);
 static void test_list_with_null_operations(void);
 static void test_list_with_out_of_bounds_values(void);
 static void test_double_list(void);
+static int compare_ints(const void *a, const void *b);
 
 int test_list(void)
 {
@@ -59,6 +60,21 @@ static void test_int_list(void)
 	assert(*set_val == 999);
 
 	list_free(int_list);
+
+	// Test sorting
+	list unsorted = list_create(10, sizeof(int));
+	int values[] = {5, 3, 8, 1, 4};
+	for (size_t i = 0; i < sizeof(values) / sizeof(values[0]); i++)
+		list_append(unsorted, &values[i]);
+	sort_list(unsorted, compare_ints);
+	int expected[] = {1, 3, 4, 5, 8};
+	for (size_t i = 0; i < sizeof(expected) / sizeof(expected[0]); i++)
+	{
+		int *val = (int *)list_get(unsorted, i);
+		assert(val != NULL);
+		assert(*val == expected[i]);
+	}	
+	list_free(unsorted);
 }
 
 static void test_list_with_invalid_element_size(void)
@@ -132,4 +148,11 @@ static void test_double_list(void)
 	}
 
 	list_free(double_list);
+}
+
+static int compare_ints(const void *a, const void *b)
+{
+	const int *int_a = (const int *)a;
+	const int *int_b = (const int *)b;
+	return (*int_a > *int_b) - (*int_a < *int_b);
 }
