@@ -28,7 +28,7 @@ int test_list(void)
 
 	test_double_list();
 
-	printf("All tests passed!\n");
+	printf("All list tests passed!\n");
 	return 0;
 }
 

@@ -1,11 +1,14 @@
-/*
- * list.h
+/**
+ * @file list.h
+ * @brief Dynamic list implementation (dynamic array).
  *
- * A simple dynamic array implementation in C.
- *
- * This header defines an opaque list type and functions to create, manipulate,
- * and free the list. The list can hold elements of any type, specified by
- * the element size at creation.
+ * This header provides an opaque dynamic list type and functions to manipulate it.
+ * The list can hold elements of any type, specified by the element size at creation.
+ * When elements are added, the list automatically resizes.
+ * The list itself is not exposed to the user, and all interactions are done through
+ * the provided functions.
+ * 
+ * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
  */
 
 #ifndef LIST_H
@@ -14,12 +17,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-/**
- * @file list.h
- * @brief Dynamic array implementation in C.
- *
- * This header provides an opaque dynamic list type and functions to manipulate it.
- */
 
 typedef struct list *list;
 
@@ -40,9 +37,10 @@ list list_create(size_t capacity, size_t element_size);
  * If the list is full, it will automatically resize to accommodate the new element.
  *
  * @param l Pointer to the list.
- * @param element Pointer to the element to append. Must not be NULL.
+ * @param element Pointer to the element to append.
+ * @return true if successful, false if allocation failed or list is NULL.
  */
-void list_append(list l, const void *element);
+bool list_append(list l, const void *element);
 
 /**
  * @brief Retrieves an element from the list at the specified index.

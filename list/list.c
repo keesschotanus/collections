@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,10 +41,10 @@ list list_create(size_t capacity, size_t element_size)
 	return l;
 }
 
-void list_append(list l, const void *element)
+bool list_append(list l, const void *element)
 {
 	if (l == NULL || element == NULL)
-		return;
+		return false;
 
 	if (l->number_of_elements == l->capacity)
 	{
@@ -54,8 +55,8 @@ void list_append(list l, const void *element)
 		void *tmp = realloc(l->data, (l->capacity + additional_capacity) * l->element_size);
 		if (tmp == NULL)
 		{
-			perror("Memory resize failed for list");
-			return;
+			errno = ENOMEM;
+			return false;
 		}
 
 		l->data = tmp;
@@ -64,6 +65,8 @@ void list_append(list l, const void *element)
 
 	memcpy((char *)l->data + l->number_of_elements * l->element_size, element, l->element_size);
 	l->number_of_elements++;
+
+	return true;
 }
 
 void *list_get(list l, size_t idx)

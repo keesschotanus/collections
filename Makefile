@@ -9,12 +9,12 @@ LIST_DIR = list
 TEST_DIR = test
 
 # Source files
-LIST_SRC = $(LIST_DIR)/list.c
-TEST_SRC = $(TEST_DIR)/main.c $(TEST_DIR)/test_list.c
+LIST_SRC = $(LIST_DIR)/list.c $(LIST_DIR)/doubly_linked_list.c
+TEST_SRC = $(TEST_DIR)/main.c $(TEST_DIR)/test_list.c $(TEST_DIR)/test_doubly_linked_list.c
 
 # Object files
-LIST_OBJ = $(LIST_DIR)/list.o
-TEST_OBJ = $(TEST_DIR)/main.o $(TEST_DIR)/test_list.o
+LIST_OBJ = $(LIST_DIR)/list.o $(LIST_DIR)/doubly_linked_list.o
+TEST_OBJ = $(TEST_DIR)/main.o $(TEST_DIR)/test_list.o $(TEST_DIR)/test_doubly_linked_list.o
 
 # Executables
 TEST_EXE = unittest
@@ -28,6 +28,10 @@ $(TEST_EXE): $(LIST_OBJ) $(TEST_OBJ)
 
 # Compile list object
 $(LIST_DIR)/list.o: $(LIST_DIR)/list.c $(LIST_DIR)/list.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile doubly linked list object
+$(LIST_DIR)/doubly_linked_list.o: $(LIST_DIR)/doubly_linked_list.c $(LIST_DIR)/doubly_linked_list.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile test objects

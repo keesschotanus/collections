@@ -1,3 +1,9 @@
 {
-        "C_Cpp.default.compilerPath": "/usr/bin/gcc"
+        "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+        "chat.tools.terminal.autoApprove": {
+                "gcc": true,
+                "./unittest": true,
+                "make": true
+        },
+        "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json"
 }
