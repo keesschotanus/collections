@@ -1,5 +1,7 @@
+build/
 html/
 latex/
 Doxyfile
 **/*.o
+compile_commands.json
 unittest

@@ -76,8 +76,8 @@ int main(void)
 In the example above, a doubly linked list is created to hold elements of type int.
 Other types work similarly.
 The first integer is stored at the head of the list.
-You can also insert elements to the tail and even before or after a specific node
-that you locate using the dll_list_find function.
+You can also insert elements to the tail and before or after a specific node
+that you locate using the dllist_find function.
 
-Note that you need a function two compare two elements of the same type.
+Note that you need a function to compare two elements of the same type.
 In the example compare_ints is used.
