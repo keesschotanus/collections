@@ -33,8 +33,8 @@ int test_doubly_linked_list(void)
 static void test_list(void)
 {
 	dllist int_list = create_list_with_elements_2_4_6_8();
-
-	verify_list_contents(int_list, (int[]){2, 4, 6, 8}, sizeof(int));
+	int expected_values[] = {2, 4, 6, 8};
+	verify_list_contents(int_list, expected_values, sizeof(expected_values) / sizeof(expected_values[0]));
 	dllist_free(int_list);
 }
 
