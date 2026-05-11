@@ -3,7 +3,8 @@
         "chat.tools.terminal.autoApprove": {
                 "gcc": true,
                 "./unittest": true,
-                "make": true
+                "make": true,
+                "./build/unittest": true
         },
         "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json"
 }

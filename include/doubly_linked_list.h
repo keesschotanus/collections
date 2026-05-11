@@ -12,6 +12,14 @@
  * Linus Torvalds and good taste in programming as I new it was related to handling a linked list.
  * AI suggested to use a circular list with a dummy head node since it would simplify edge cases.
  * That made the code much cleaner and easier to maintain, so I went with that design.
+ * 
+ * The code worked well and passed all tests, but I was worried about performance when inserting a large number of elements.
+ * Particularly since each node requires a separate allocation, which can be expensive.
+ * To address this, I asked AI to implement a simple chunk allocator that allocates memory for multiple nodes at once.
+ * 
+ * I measured the performance of inserting 100 million integers into the list.
+ * Before implementing the chunk allocator this required 3.1s and after implementing it, the time dropped to 1.0s.
+ * This on a 13th Gen Intel(R) Core(TM) i7-13700.
  */
 
 #ifndef DOUBLY_LINKED_LIST_H
