@@ -86,6 +86,17 @@ bool list_set(list l, size_t idx, const void *element)
 	return true;
 }
 
+void list_visit(list l, void (*visit)(const void *))
+{
+	if (l == NULL || visit == NULL)
+		return;
+
+	for (size_t i = 0; i < l->number_of_elements; i++)
+	{
+		visit((char *)l->data + i * l->element_size);
+	}
+}
+
 void list_free(list l)
 {
 	if (l == NULL)

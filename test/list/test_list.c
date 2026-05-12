@@ -16,6 +16,7 @@ static void test_list_with_zero_capacity(void);
 static void test_list_with_null_operations(void);
 static void test_list_with_out_of_bounds_values(void);
 static void test_double_list(void);
+static void test_list_visit(void);
 static int compare_ints(const void *a, const void *b);
 
 int test_list(void)
@@ -27,6 +28,8 @@ int test_list(void)
 	test_list_with_out_of_bounds_values();
 
 	test_double_list();
+
+	test_list_visit();
 
 	printf("All list tests passed!\n");
 	return 0;
@@ -146,6 +149,25 @@ static void test_double_list(void)
 		assert(val != NULL);
 		assert(*val == i * 1.1);
 	}
+
+	list_free(double_list);
+}
+
+static double visited_sum = 0;
+static void visit_double(const void *data)
+{
+	visited_sum += *(const double *)data;
+}
+
+static void test_list_visit(void)
+{
+	list double_list = list_create(10, sizeof(double));
+	list_append(double_list, &(double){2.25});
+	list_append(double_list, &(double){4.50});
+	list_append(double_list, &(double){6.25});
+	list_append(double_list, &(double){8.0});
+	list_visit(double_list, visit_double);
+	assert(visited_sum == 2.25 + 4.50 + 6.25 + 8.0);
 
 	list_free(double_list);
 }
