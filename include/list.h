@@ -62,6 +62,14 @@ void *list_get(list l, size_t idx);
 bool list_set(list l, size_t idx, const void *element);
 
 /**
+ * @brief Visits each element in the list using the provided function.
+ *
+ * @param l Pointer to the list.
+ * @param visit Pointer to the visit function, called for each element.
+ */
+void list_visit(list l, void (*visit)(const void *));
+
+/**
  * @brief Frees the memory allocated for the list.
  *
  * After calling this, the list pointer becomes invalid.

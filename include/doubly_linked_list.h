@@ -116,6 +116,14 @@ bool dllist_remove(dllist l, dllnode node);
 dllnode dllist_find(dllist l, const void *element, int (*cmp)(const void *, const void *));
 
 /**
+ * @brief Visits each element in the list using the provided function.
+ *
+ * @param l Pointer to the list.
+ * @param visit Pointer to the visit function, called for each element.
+ */
+void dllist_visit(dllist l, void (*visit)(const void *));
+
+/**
  * @brief Gets the data from a node.
  *
  * @param node The node to get the data from.

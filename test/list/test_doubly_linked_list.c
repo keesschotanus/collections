@@ -13,6 +13,7 @@
 static void test_list(void);
 static void test_list_find(void);
 static void test_list_insert(void);
+static void test_list_visit(void);
 static void test_list_remove(void);
 
 static int compare_ints(const void *a, const void *b);
@@ -24,6 +25,7 @@ int test_doubly_linked_list(void)
 	test_list();
 	test_list_find();
 	test_list_insert();
+	test_list_visit();
 	test_list_remove();
 
 	printf("All doubly_linked_list tests passed!\n");
@@ -77,6 +79,22 @@ static void test_list_insert(void)
 
 	dllist_free(int_list);
 }
+
+static int visited_sum = 0;
+static void visit_int(const void *data)
+{
+	visited_sum += *(const int *)data;
+}
+
+static void test_list_visit(void)
+{
+	dllist int_list = create_list_with_elements_2_4_6_8();
+	dllist_visit(int_list, visit_int);
+	assert(visited_sum == 2 + 4 + 6 + 8);
+
+	dllist_free(int_list);
+}
+
 
 static void test_list_remove(void)
 {

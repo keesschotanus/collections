@@ -109,6 +109,20 @@ bool dllist_insert_after(dllist l, dllnode node, const void *element)
 	return true;
 }
 
+dllnode dllist_first(dllist l)
+{
+	if (l == NULL || l->head->next == l->head)
+		return NULL;
+	return l->head->next;
+}
+
+dllnode dllist_last(dllist l)
+{
+	if (l == NULL || l->head->prev == l->head)
+		return NULL;
+	return l->head->prev;
+}
+
 dllnode dllist_next(dllist l, dllnode node)
 {
 	if (l == NULL || node == NULL || node->next == l->head)
@@ -153,6 +167,19 @@ dllnode dllist_find(dllist l, const void *element, int (*cmp)(const void *, cons
 	return NULL;
 }
 
+void dllist_visit(dllist l, void (*visit)(const void *))
+{
+	if (l == NULL || visit == NULL)
+		return;
+
+	struct doubly_linked_list_node *current = l->head->next;
+	while (current != l->head)
+	{
+		visit(current->data);
+		current = current->next;
+	}
+}
+
 const void *dllist_node_data(dllnode node)
 {
 	if (node == NULL)
@@ -160,19 +187,6 @@ const void *dllist_node_data(dllnode node)
 	return node->data;
 }
 
-dllnode dllist_first(dllist l)
-{
-	if (l == NULL || l->head->next == l->head)
-		return NULL;
-	return l->head->next;
-}
-
-dllnode dllist_last(dllist l)
-{
-	if (l == NULL || l->head->prev == l->head)
-		return NULL;
-	return l->head->prev;
-}
 
 void dllist_free(dllist l)
 {
