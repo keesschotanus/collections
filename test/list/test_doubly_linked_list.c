@@ -126,7 +126,7 @@ static int compare_ints(const void *a, const void *b)
 }
 
 static dllist create_list_with_elements_2_4_6_8() {
-	dllist l = dllist_create(sizeof(int));
+	dllist l = dllist_create(2, sizeof(int));
 	assert(l != NULL);
 
 	for (int i = 2; i <= 8; i += 2)

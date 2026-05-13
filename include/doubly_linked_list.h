@@ -36,10 +36,11 @@ typedef struct doubly_linked_list_node *dllnode;
 /**
  * @brief Creates a new doubly linked list.
  *
+ * @param initial_capacity Initial capacity of the list (number of nodes).
  * @param element_size Size of each element in bytes.
  * @return Pointer to the new list, or NULL if allocation failed or element_size is 0.
  */
-dllist dllist_create(size_t element_size);
+dllist dllist_create(size_t initial_capacity, size_t element_size);
 
 /**
  * @brief Inserts an element before the specified node.

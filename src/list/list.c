@@ -1,3 +1,11 @@
+/**
+ * @file list.c
+ * 
+ * This file implements a dynamic list (dynamic array) that can hold elements of any type.
+ * The list automatically resizes to twice its current capacity when elements are added.
+ * 
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,8 +13,7 @@
 
 #include "list.h"
 
-#define INITIAL_CAPACITY 10
-#define GROWTH_FACTOR 30 	// As a percentage of current capacity
+#define INITIAL_CAPACITY 32
 
 struct list
 {
@@ -16,19 +23,19 @@ struct list
 	size_t element_size;
 };
 
-list list_create(size_t capacity, size_t element_size)
+ list list_create(size_t initial_capacity, size_t element_size)
 {
 	if (element_size == 0)
 		return NULL;
 
 	// Prevent zero byte allocation by using a default initial capacity	
-	capacity = capacity > 0 ? capacity : INITIAL_CAPACITY;
+	initial_capacity = initial_capacity > 0 ? initial_capacity : INITIAL_CAPACITY;
 
 	struct list *l = malloc(sizeof *l);
 	if (l == NULL)
 		return NULL;
 
-	l->data = malloc(capacity * element_size);
+	l->data = malloc(initial_capacity * element_size);
 	if (l->data == NULL)
 	{
 		free(l);
@@ -36,7 +43,7 @@ list list_create(size_t capacity, size_t element_size)
 	}
 
 	l->number_of_elements = 0;
-	l->capacity = capacity;
+	l->capacity = initial_capacity;
 	l->element_size = element_size;
 	return l;
 }
@@ -48,10 +55,7 @@ bool list_append(list l, const void *element)
 
 	if (l->number_of_elements == l->capacity)
 	{
-		size_t additional_capacity = l->capacity * GROWTH_FACTOR / 100;
-		additional_capacity = additional_capacity >= INITIAL_CAPACITY
-			? additional_capacity : INITIAL_CAPACITY;
-
+		size_t additional_capacity = l->number_of_elements;
 		void *tmp = realloc(l->data, (l->capacity + additional_capacity) * l->element_size);
 		if (tmp == NULL)
 		{

@@ -25,11 +25,11 @@ typedef struct list *list;
  *
  * Allocates memory for a new list with the specified initial capacity and element size.
  *
- * @param capacity Initial capacity of the list (number of elements). If 0, uses a default.
- * @param element_size Size of each element in bytes. Must be greater than 0.
+ * @param initial_capacity Initial capacity of the list (number of elements).
+ * @param element_size Size of each element in bytes.
  * @return Pointer to the new list, or NULL if allocation failed or element_size is 0.
  */
-list list_create(size_t capacity, size_t element_size);
+list list_create(size_t initial_capacity, size_t element_size);
 
 /**
  * @brief Appends an element to the end of the list.
