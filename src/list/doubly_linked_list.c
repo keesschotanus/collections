@@ -1,3 +1,15 @@
+/**
+ * @file doubly_linked_list.c
+ * 
+ * This file implements a doubly linked list that can hold elements of any type.
+ * The list uses a chunk-based memory allocator to efficiently manage memory for nodes.
+ * When nodes are removed, they are added to a free list for reuse, which can improve
+ * performance in scenarios with frequent insertions and deletions.
+ * 
+ * When inserting nodes, if the current chunk doesn't have enough space, a new chunk is allocated
+ * with space for at least the initial capacity of nodes. This helps to reduce the number of allocations.
+ */
+
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -5,6 +17,8 @@
 #include <string.h>
 
 #include "doubly_linked_list.h"
+
+#define INITIAL_CAPACITY 32
 
 struct chunk
 {
@@ -27,12 +41,13 @@ struct doubly_linked_list
 	size_t element_size;
 	struct chunk *chunks;
 	struct doubly_linked_list_node *free_list;
+	size_t initial_capacity;
 };
 
 static struct doubly_linked_list_node *allocate_node(struct doubly_linked_list *l);
 static void free_node(struct doubly_linked_list *l, struct doubly_linked_list_node *node);
 
-dllist dllist_create(size_t element_size)
+dllist dllist_create(size_t initial_capacity, size_t element_size)
 {
 	if (element_size == 0)
 		return NULL;
@@ -47,6 +62,7 @@ dllist dllist_create(size_t element_size)
 	l->element_size = element_size;
 	l->chunks = NULL;
 	l->free_list = NULL;
+	l->initial_capacity = initial_capacity > 0 ? initial_capacity : INITIAL_CAPACITY;
 
 	l->head = allocate_node(l);
 	if (l->head == NULL)
@@ -228,9 +244,8 @@ static struct doubly_linked_list_node *allocate_node(struct doubly_linked_list *
 		if (new_chunk == NULL)
 			return NULL;
 
-		// Allocate at least room for 32 nodes or 1MB, whichever is larger
-		size_t elements_to_allocate = 32 * node_size >= 1024 * 1024 ? 32 : (1024 * 1024 / node_size) + 1;
-		size_t alloc_size = elements_to_allocate * node_size;
+		// Allocate a chunk that can hold at least initial_capacity nodes
+		size_t alloc_size = l->initial_capacity * node_size;
 			
 		new_chunk->size = alloc_size;
 		new_chunk->memory = malloc(alloc_size);
