@@ -130,14 +130,23 @@ bool dllist_push(dllist l, const void *element)
 	return dllist_insert_after(l, NULL, element);
 }
 
-dllnode dllist_pop(dllist l)
+void *dllist_pop(dllist l)
 {
 	if (l == NULL || l->head->prev == l->head)
 		return NULL;
 
 	dllnode last_node = l->head->prev;
 	dllist_remove(l, last_node);
-	return last_node;
+	return last_node->data;
+}
+
+void *dllist_peek(dllist l)
+{
+	if (l == NULL || l->head->prev == l->head)
+		return NULL;
+
+	dllnode last_node = l->head->prev;
+	return last_node->data;
 }
 
 dllnode dllist_first(dllist l)
