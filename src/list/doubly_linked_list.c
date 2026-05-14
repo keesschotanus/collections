@@ -125,6 +125,21 @@ bool dllist_insert_after(dllist l, dllnode node, const void *element)
 	return true;
 }
 
+bool dllist_push(dllist l, const void *element)
+{
+	return dllist_insert_after(l, NULL, element);
+}
+
+dllnode dllist_pop(dllist l)
+{
+	if (l == NULL || l->head->prev == l->head)
+		return NULL;
+
+	dllnode last_node = l->head->prev;
+	dllist_remove(l, last_node);
+	return last_node;
+}
+
 dllnode dllist_first(dllist l)
 {
 	if (l == NULL || l->head->next == l->head)
