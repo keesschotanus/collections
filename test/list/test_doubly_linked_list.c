@@ -13,7 +13,7 @@
 static void test_list(void);
 static void test_list_find(void);
 static void test_list_insert(void);
-static void test_list_push_and_pop(void);
+static void test_list_push_and_pop_and_peek(void);
 static void test_list_visit(void);
 static void test_list_remove(void);
 
@@ -26,7 +26,7 @@ int test_doubly_linked_list(void)
 	test_list();
 	test_list_find();
 	test_list_insert();
-	test_list_push_and_pop();
+	test_list_push_and_pop_and_peek();
 	test_list_visit();
 	test_list_remove();
 
@@ -82,7 +82,7 @@ static void test_list_insert(void)
 	dllist_free(int_list);
 }
 
-static void test_list_push_and_pop(void)
+static void test_list_push_and_pop_and_peek(void)
 {
 	dllist int_list = dllist_create(2, sizeof(int));
 	assert(int_list != NULL);
@@ -99,10 +99,11 @@ static void test_list_push_and_pop(void)
 	// Pop elements from the list and verify order
 	for (int i = 5; i >= 1; i--)
 	{
-		dllnode node = dllist_pop(int_list);
-		assert(node != NULL);
-		const void* data = dllist_node_data(node);
-		assert(*(int *)data == i);
+		int peeked_value = *(int *)dllist_peek(int_list);
+		assert(peeked_value == i);
+
+		int data = *(int *)dllist_pop(int_list);
+		assert(data == i);
 	}
 
 	// Pop from an empty list should return NULL
