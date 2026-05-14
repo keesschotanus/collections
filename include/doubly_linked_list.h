@@ -20,6 +20,8 @@
  * I measured the performance of inserting 100 million integers into the list.
  * Before implementing the chunk allocator this required 3.1s and after implementing it, the time dropped to 1.0s.
  * This on a 13th Gen Intel(R) Core(TM) i7-13700.
+ * 
+ * This list can pose as a stack by using dllist_push() and dllist_pop().
  */
 
 #ifndef DOUBLY_LINKED_LIST_H
@@ -63,6 +65,23 @@ bool dllist_insert_before(dllist l, dllnode node, const void *element);
  * @return true if successful, false if allocation failed or list is NULL.
  */
 bool dllist_insert_after(dllist l, dllnode node, const void *element);
+
+/**
+ * @brief Treats this list as a stack and pushes an element to the end.
+ * 
+ * @param l Pointer to the list.
+ * @param element Pointer to the element to push.
+ * @return true if successful, false if allocation failed or list is NULL.
+ */
+bool dllist_push(dllist l, const void *element);
+
+/**
+ * @brief Treats this list as a stack and pops an element from the end.
+ * 
+ * @param l Pointer to the list.
+ * @return Pointer to the popped element, or NULL if the list is empty or NULL.
+ */
+dllnode dllist_pop(dllist l);
 
 /**
  * @brief Gets the first node in the list.
