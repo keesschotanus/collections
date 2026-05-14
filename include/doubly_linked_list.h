@@ -79,9 +79,17 @@ bool dllist_push(dllist l, const void *element);
  * @brief Treats this list as a stack and pops an element from the end.
  * 
  * @param l Pointer to the list.
- * @return Pointer to the popped element, or NULL if the list is empty or NULL.
+ * @return Pointer to the popped data, or NULL if the list is empty or NULL.
  */
-dllnode dllist_pop(dllist l);
+void *dllist_pop(dllist l);
+
+/**
+ * @brief Treats this list as a stack and peeks at the top element.
+ * 
+ * @param l Pointer to the list.
+ * @return Pointer to the popped data, or NULL if the list is empty or NULL.
+ */
+void *dllist_peek(dllist l);
 
 /**
  * @brief Gets the first node in the list.
