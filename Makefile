@@ -1,11 +1,24 @@
 # Makefile for C Collections Project
 
 CC = gcc
-CFLAGS = -std=c2x -Wall -Wextra -Iinclude
+# Installation prefix and staging
+PREFIX ?= /usr/local
+DESTDIR ?=
+
+# Flags
+CPPFLAGS += -Iinclude
+CFLAGS = -std=c2x -Wall -Wextra
+DEPFLAGS = -MMD -MP
 PICFLAGS = -fPIC
 LDFLAGS =
 AR = ar
 ARFLAGS = rcs
+
+# Utilities
+RM := rm -rf
+INSTALL := install
+INSTALL_DATA := $(INSTALL) -m 644
+INSTALL_PROG := $(INSTALL) -m 755
 
 # Directories
 SRC_DIR = src
@@ -55,22 +68,29 @@ $(TEST_EXE): $(ALL_OBJ)
 # Generic rule: compile test source files from $(TST_SRC_DIR) into matching objects under $(BLD_DIR)/test/
 $(BLD_DIR)/test/%.o: $(TST_SRC_DIR)/%.c | $(BLD_DIR)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
 
 # Generic rule: compile library source files from $(SRC_DIR) into matching objects under $(BLD_DIR)/lib/
 $(BLD_DIR)/lib/%.o: $(SRC_DIR)/%.c | $(BLD_DIR)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(PICFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(PICFLAGS) $(DEPFLAGS) -c $< -o $@
 
 # Static library
 $(STATIC_LIB): $(LIB_OBJ) | $(LIB_DIR)
 	@mkdir -p $(dir $@)
-	$(AR) $(ARFLAGS) $@ $(LIB_OBJ)
+	$(AR) $(ARFLAGS) $@ $^
 
 # Shared library
 $(SHARED_LIB): $(LIB_OBJ) | $(LIB_DIR)
 	@mkdir -p $(dir $@)
-	$(CC) -shared -o $@ $(LIB_OBJ) $(LDFLAGS)
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
+
+# Convenience targets to build libraries
+libs: $(STATIC_LIB) $(SHARED_LIB)
+
+static: $(STATIC_LIB)
+
+shared: $(SHARED_LIB)
 
 # Convenience targets to build libraries
 libs: $(STATIC_LIB) $(SHARED_LIB)
@@ -85,9 +105,27 @@ test: $(TEST_EXE)
 
 # Clean build artifacts
 clean:
-	rm -rf $(BLD_DIR)
-	rm -f $(STATIC_LIB) $(SHARED_LIB)
+	$(RM) $(BLD_DIR)
+	$(RM) $(STATIC_LIB) $(SHARED_LIB)
+
+# Install headers
+install-headers:
+	mkdir -p $(DESTDIR)$(PREFIX)/include/collections
+	$(INSTALL_DATA) include/*.h $(DESTDIR)$(PREFIX)/include/collections/
+
+# Install static library
+install-static: $(STATIC_LIB)
+	mkdir -p $(DESTDIR)$(PREFIX)/lib
+	$(INSTALL_DATA) $(STATIC_LIB) $(DESTDIR)$(PREFIX)/lib/
+
+# Install shared library
+install-shared: $(SHARED_LIB)
+	mkdir -p $(DESTDIR)$(PREFIX)/lib
+	$(INSTALL_PROG) $(SHARED_LIB) $(DESTDIR)$(PREFIX)/lib/
+
+# Install both libraries and headers
+install: install-static install-shared install-headers
 
 # Phony targets
-.PHONY: all test clean libs static shared
+.PHONY: all test clean libs static shared install install-static install-shared install-headers
 
