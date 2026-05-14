@@ -1,6 +1,7 @@
 build/
 html/
 latex/
+lib/
 Doxyfile
 **/*.o
 compile_commands.json
