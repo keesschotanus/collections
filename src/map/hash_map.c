@@ -37,14 +37,10 @@ hash_map hash_map_create(size_t buckets, size_t key_size, size_t value_size) {
 	if (bucket_list == NULL)
 		return NULL;
 
-	// Currently the only way to populate the buckets is by using list_append().
-	// This means we need to append NULL for each bucket to initialize them.
+	dllist null_bucket = NULL;		
 	for (size_t i = 0; i < buckets; i++) {
-		dllist null_bucket = NULL;
-		if (!list_append(bucket_list, &null_bucket)) {
-			list_free(bucket_list);
-			return NULL;
-		}
+		
+		list_append(bucket_list, &null_bucket);
 	}
 
 	struct hash_map *hmap = malloc(sizeof(struct hash_map));
