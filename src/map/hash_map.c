@@ -28,6 +28,8 @@ struct bucket_list {
 };
 
 static size_t hash(const void *key, size_t key_size, size_t num_buckets);
+static dllist get_bucket(hash_map hmap, const void *key);
+static dllnode get_node_from_bucket(hash_map hmap, dllist bucket, const void *key);
 
 hash_map hash_map_create(size_t buckets, size_t key_size, size_t value_size) {
 	if (buckets == 0 || key_size == 0 || value_size == 0)
@@ -62,7 +64,6 @@ bool hash_map_put(hash_map hmap, const void *key, const void *value) {
 	if (hmap == NULL || key == NULL || value == NULL)
 		return false;
 
-	// Get the bucket index using the hash function
 	size_t bucket_index = hash(key, hmap->key_size, hmap->bucket_list_size);
 	dllist bucket = *(dllist *)list_get(hmap->bucket_list, bucket_index);
 	if (bucket == NULL)
@@ -90,37 +91,42 @@ void *hash_map_get(hash_map hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
 
-	// Get the bucket index using the hash function
-	size_t bucket_index = hash(key, hmap->key_size, hmap->bucket_list_size);
-	dllist bucket = *(dllist *)list_get(hmap->bucket_list, bucket_index);
+	dllist bucket = get_bucket(hmap, key);
 	if (bucket == NULL)
 		return NULL;
 
-	// Iterate through the bucket to find the matching key
-	dllnode node = dllist_first(bucket);
-	while (node != NULL) {
-		const void *entry = dllist_node_data(node);
-		// Compare only the key part of the entry
-		if (memcmp(entry, key, hmap->key_size) == 0) {
-			return (char *)entry + hmap->key_size;
-		}
-		node = dllist_next(bucket, node);
-	}
+	dllnode node = get_node_from_bucket(hmap, bucket, key);
+	if (node == NULL)
+		return NULL;
 
-	return NULL;
+	return (char *)dllist_node_data(node) + hmap->key_size;
+}
+
+bool hash_map_remove(hash_map hmap, const void *key) {
+	if (hmap == NULL || key == NULL)
+		return NULL;
+
+	dllist bucket = get_bucket(hmap, key);
+	if (bucket == NULL)
+		return NULL;
+
+	dllnode node = get_node_from_bucket(hmap, bucket, key);
+	if (node == NULL)
+		return NULL;
+
+	return dllist_remove(bucket, node);
 }
 
 void hash_map_free(hash_map hmap) {
 	if (hmap == NULL)
 		return;
 
-	// Free each bucket list
+	// Free each bucket
 	size_t buckets = list_size(hmap->bucket_list);
 	for (size_t i = 0; i < buckets; i++)
 	{
-		void *bucket = list_get(hmap->bucket_list, i);
-		if (bucket != NULL)
-			dllist_free(bucket);
+		dllist bucket = *(dllist *)list_get(hmap->bucket_list, i);
+		dllist_free(bucket);
 	}
 
 	// Free the bucket list and the hash map itself
@@ -140,3 +146,25 @@ static size_t hash(const void *key, size_t key_size, size_t num_buckets) {
 	return hash_value % num_buckets;
 }
 
+static dllist get_bucket(hash_map hmap, const void *key) {
+	if (hmap == NULL || key == NULL)
+		return NULL;
+
+	size_t bucket_index = hash(key, hmap->key_size, hmap->bucket_list_size);
+	return *(dllist *)list_get(hmap->bucket_list, bucket_index);
+}
+
+static dllnode get_node_from_bucket(hash_map hmap, dllist bucket, const void *key) {
+	dllnode node = dllist_first(bucket);
+	while (node != NULL) {
+		const void *entry = dllist_node_data(node);
+		// Compare only the key part of the entry
+		if (memcmp(entry, key, hmap->key_size) == 0) {
+			return node;
+		}
+		node = dllist_next(bucket, node);
+	}
+
+	return NULL;
+
+}	

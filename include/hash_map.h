@@ -44,5 +44,20 @@ void *hash_map_get(hash_map hmap, const void *key);
  */
 bool hash_map_put(hash_map hmap, const void *key, const void *value);
 
+/**
+ * @brief Removes a key-value pair from the hash map.
+ *
+ * @param hmap Pointer to the hash map.
+ * @param key Pointer to the key to remove. Must not be NULL.
+ * @return true if found and removed, false otherwise.
+ */
+bool hash_map_remove(hash_map hmap, const void *key);
+
+/**
+ * @brief Frees the memory used by the hash map.
+ *
+ * @param hmap Pointer to the hash map to free. If NULL, does nothing.
+ */
+void hash_map_free(hash_map hmap);
 
 #endif
