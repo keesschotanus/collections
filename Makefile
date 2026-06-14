@@ -26,6 +26,7 @@ INC_DIR = include
 TST_SRC_DIR = test
 BLD_DIR = build
 LIB_DIR = lib
+API_DOC_DIR = apidoc
 
 # Library names
 STATIC_LIB = $(LIB_DIR)/libcollections.a
@@ -107,6 +108,7 @@ test: $(TEST_EXE)
 clean:
 	$(RM) $(BLD_DIR)
 	$(RM) $(STATIC_LIB) $(SHARED_LIB)
+	$(RM) $(API_DOC_DIR)
 
 # Install headers
 install-headers:
@@ -126,6 +128,10 @@ install-shared: $(SHARED_LIB)
 # Install both libraries and headers
 install: install-static install-shared install-headers
 
+# Generate documentation (placeholder)
+apidoc: $(INC_DIR)/*.h
+	doxygen Doxyfile
+
 # Phony targets
-.PHONY: all test clean libs static shared install install-static install-shared install-headers
+.PHONY: all test clean libs static shared install install-static install-shared install-headers gendoc
 

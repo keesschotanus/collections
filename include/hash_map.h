@@ -1,10 +1,52 @@
 /**
  * @file hash_map.h
  * @brief Simple Hash map implementation.
- *
- * This header provides an opaque hash map type and functions to manipulate it.
+ * @details A hash map allows you to store key/value pairs.
+ * The key has to be unique and the value can be any type.
+ * 
+ * Storing and retrieving values is very fast, but the order of the elements is not guaranteed.
  * 
  * Don't forget to free the hash map with hash_map_free() when you're done to avoid memory leaks.
+ * @example
+ * @code
+ * #include <stdio.h>
+ * #include <stdlib.h>
+ * #include <string.h>
+ * #include <assert.h>
+ * 
+ * #include "hash_map.h"
+ * 
+ * struct person {
+ *     int id;
+ *     char name[50];
+ *     char email[100];
+ * };
+ * 
+ * int main(void)
+ * {
+ *         hash_map hmap = hash_map_create(10, sizeof(int), sizeof(struct person));
+ * 
+ *         struct person p1 = {1, "Alice", "alice@example.com"};
+ *         struct person p2 = {2, "Bob", "bob@example.com"};
+ * 
+ *         hash_map_put(hmap, &(int){1}, &p1);
+ *         hash_map_put(hmap, &(int){2}, &p2);
+ * 
+ *         struct person alice = *(struct person *)hash_map_get(hmap, &(int){1});
+ *         printf("Alice: id=%d, name=%s, email=%s\n", alice.id, alice.name, alice.email);
+ *
+ *         hash_map_remove(hmap, &(int){1});
+ *         hash_map_free(hmap);
+ * }
+ * @endcode
+ * 
+ * In the example above, a hash map is created to hold key/value pairs,
+ * where the key is an integer and the value is a struct person.
+ * The hash map is created with 10 buckets, and the key and value sizes are specified.
+ * The hash_map_put() function is used to insert key/value pairs, and the hash_map_get() function
+ * is used to retrieve values based on their keys.
+ * The hash_map_remove() function is used to remove a key/value pair from the hash map.
+ * Finally, the hash_map_free() function is called to free the memory used by the hash map.
  */
 
 #ifndef HASH_MAP_H

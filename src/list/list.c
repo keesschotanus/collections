@@ -4,6 +4,8 @@
  * This file implements a dynamic list (dynamic array) that can hold elements of any type.
  * The list automatically resizes to twice its current capacity when elements are added.
  * 
+ * The implementation uses an opaque pointer to hide the internal structure of the list
+ * from users of the API.
  */
 
 #include <errno.h>

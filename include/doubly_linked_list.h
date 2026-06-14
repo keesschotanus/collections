@@ -1,27 +1,59 @@
 /**
  * @file doubly_linked_list.h
  * @brief Doubly linked list implementation.
- *
- * This header provides an opaque dynamic doubly linked list type and functions to manipulate it.
+ * @details A doubly linked list is a data structure that can grow dynamically.
  * The list can hold elements of any type, specified by the element size at creation.
- * The list itself is not exposed to the user, and all interactions are done through the provided functions.
  * 
- * Don't forget to free the list with dllist_free() when you're done to avoid memory leaks.
- * 
- * My design goal was to keep things simple, but after my initial implementation, I asked AI about the interview with
- * Linus Torvalds and good taste in programming as I new it was related to handling a linked list.
- * AI suggested to use a circular list with a dummy head node since it would simplify edge cases.
- * That made the code much cleaner and easier to maintain, so I went with that design.
- * 
- * The code worked well and passed all tests, but I was worried about performance when inserting a large number of elements.
- * Particularly since each node requires a separate allocation, which can be expensive.
- * To address this, I asked AI to implement a simple chunk allocator that allocates memory for multiple nodes at once.
- * 
- * I measured the performance of inserting 100 million integers into the list.
- * Before implementing the chunk allocator this required 3.1s and after implementing it, the time dropped to 1.0s.
- * This on a 13th Gen Intel(R) Core(TM) i7-13700.
+ * A doubly linked list is a data structure that consists of nodes where each node contains a
+ * pointer to the next node and a pointer to the previous node.
+ * Insert and delete operations are very fast.
+ * Unlike the dynamic list, elements can be inserted at any position in the list.
+ * When removing elements, memory is reused.
  * 
  * This list can pose as a stack by using dllist_push() and dllist_pop().
+ * 
+ * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
+ * @example
+ * @code
+ * #include "doubly_linked_list.h"
+ *
+ * static int compare_ints(const void *a, const void *b)
+ * {
+ *          const int *int_a = (const int *)a;
+ *          const int *int_b = (const int *)b;
+ * 
+ *          return (*int_a > *int_b) - (*int_a < *int_b);
+ * }
+ * 
+ * int main(void)
+ * {
+ *         dllist l = dllist_create(sizeof(int));
+ *         // Add at beginning
+ *         dllist_insert_before(l, NULL, &(int){1});
+ *         
+ *         // Find the node with a value of 1
+ *         dllnode node = dllist_find(l, &(int){1}, compare_ints);
+ *
+ *         // Insert a node after the found node
+ *         dllist_insert_after(l, node, &(int){2});
+ *
+ *         // Remove the last node from the list
+ *         dllist_remove(l, dllist_last(l));
+ *         
+ *         dllist_free(l);
+ *
+ *         return 0;
+ * }
+ * @endcode
+ *
+ * In the example above, a doubly linked list is created to hold elements of type int.
+ * Other types work similarly.
+ * The first integer is stored at the head of the list.
+ * You can also insert elements to the tail and before or after a specific node
+ * that you locate using the dllist_find() function.
+ * 
+ * Note that you need a function to compare two elements of the same type.
+ * In the example compare_ints is used.
  */
 
 #ifndef DOUBLY_LINKED_LIST_H

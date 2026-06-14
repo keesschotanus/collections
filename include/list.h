@@ -1,14 +1,40 @@
 /**
  * @file list.h
  * @brief Dynamic list implementation (dynamic array).
- *
- * This header provides an opaque dynamic list type and functions to manipulate it.
+ * @details A dynamic list is a data structure that can grow dynamically.
  * The list can hold elements of any type, specified by the element size at creation.
  * When elements are added, the list automatically resizes.
- * The list itself is not exposed to the user, and all interactions are done through
- * the provided functions.
+ * Elements can only be appended to the end of the list.
+ * If you need more complex operations like inserting at specific positions,
+ * consider using the doubly_linked_list.h instead.
  * 
  * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
+ * @example
+ * @code
+ * #include "list.h"
+ * 
+ * int main(void)
+ * {
+ *         // Create a list of integers
+ *         list int_list = list_create(10, sizeof(int));
+ *
+ *         for (size_t i = 0; i < 20; i++)
+ *                 list_append(int_list, &i);
+ *
+ *         // Set a value at index 3
+ *         int value = 42;
+ *         list_set(int_list, 3, &value);
+ *
+ *         // Get a value from index 7
+ *         value = *(int *)list_get(int_list, 7);
+ *
+ *         list_free(int_list);
+ *
+ *         return 0;
+ * }
+ * @endcode
+ * In the example above, a list of integers is created, with an initial capacity of 10 elements.
+ * Since 20 elements are added to the list, the list is automatically grown when the maximum capacity is reached.
  */
 
 #ifndef LIST_H

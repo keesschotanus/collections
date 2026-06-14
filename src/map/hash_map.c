@@ -1,8 +1,17 @@
 /**
  * @file hash_map.c
+ * @brief Simple Hash map implementation.
+ * @details A hash map allows you to store key/value pairs.
+ * The key has to be unique and the value can be any type.
+
+ * I used my dynamic list to store a list of buckets.
+ * Each bucket is a doubly linked list that holds key-value pairs.
  * 
- * This file implements a simple hash map data structure.
+ * The implementation uses an opaque pointer to hide the internal structure of the list
+ * from users of the API.
  */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>

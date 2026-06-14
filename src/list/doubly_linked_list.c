@@ -1,13 +1,34 @@
 /**
  * @file doubly_linked_list.c
- * 
- * This file implements a doubly linked list that can hold elements of any type.
+ * @brief Doubly linked list implementation that can hold elements of any type.
+ * @details 
  * The list uses a chunk-based memory allocator to efficiently manage memory for nodes.
  * When nodes are removed, they are added to a free list for reuse, which can improve
  * performance in scenarios with frequent insertions and deletions.
  * 
- * When inserting nodes, if the current chunk doesn't have enough space, a new chunk is allocated
- * with space for at least the initial capacity of nodes. This helps to reduce the number of allocations.
+ * When inserting nodes, if the current chunk doesn't have enough space,
+ * a new chunk is allocated with space for at least the initial capacity of nodes.
+ * This helps to reduce the number of allocations.
+ * 
+ * The implementation uses an opaque pointer to hide the internal structure of the list
+ * from users of the API.
+ * 
+ * My design goal was to keep things simple, but after my initial implementation,
+ * I asked AI about the interview with Linus Torvalds and good taste in programming,
+ * as I new it was related to handling a linked list.
+ * AI suggested to use a circular list with a dummy head node since it would simplify edge cases.
+ * That made the code much cleaner and easier to maintain, so I went with that design.
+ * 
+ * The code worked well and passed all tests, but I was worried about performance
+ * when inserting a large number of elements.
+ * Particularly since each node requires a separate memory allocation, which can be expensive.
+ * To address this, I asked AI to implement a simple chunk allocator that allocates memory
+ * for multiple nodes at once.
+ * 
+ * I measured the performance of inserting 100 million integers into the list.
+ * Before implementing the chunk allocator this required 3.1s and after implementing it,
+ * the time dropped to 1.0s.
+ * This on a 13th Gen Intel(R) Core(TM) i7-13700.
  */
 
 #include <errno.h>
