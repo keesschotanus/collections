@@ -29,14 +29,16 @@ void test_hash_map(void)
 }
 
 static void test_hash_map_int_to_int(void) {
-        hash_map hmap = hash_map_create(10, sizeof(int), sizeof(int));
+        hash_map hmap = hash_map_create(1, sizeof(int), sizeof(int));
         assert(hmap != NULL);
 
-        hash_map_put(hmap, &(int){1}, &(int){100});
-        hash_map_put(hmap, &(int){2}, &(int){200});
-        
-        assert(*(int *)hash_map_get(hmap, &(int){1}) == 100);
-        assert(*(int *)hash_map_get(hmap, &(int){2}) == 200);
+        for (int i = 0; i < 100; i++) {
+                assert(hash_map_put(hmap, &i, &(int){i * 100}));
+        }
+        for (int i = 0; i < 100; i++) {
+                int const *value = (int *)hash_map_get(hmap, &i);
+                assert(*value == i * 100);
+        }       
 
         hash_map_remove(hmap, &(int){1});
         assert(hash_map_get(hmap, &(int){1}) == NULL);
@@ -60,6 +62,9 @@ static void test_hash_map_int_to_struct(void)
 
         hash_map_remove(hmap, &(int){1});
         assert(hash_map_get(hmap, &(int){1}) == NULL);
+
+        hash_map_remove(hmap, &(int){2});
+        assert(hash_map_get(hmap, &(int){2}) == NULL);
 
         hash_map_free(hmap);
 }
