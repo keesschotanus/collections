@@ -15,7 +15,7 @@
  * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
  * @example
  * @code
- * #include "doubly_linked_list.h"
+ * #include "list/doubly_linked_list.h"
  *
  * static int compare_ints(const void *a, const void *b)
  * {

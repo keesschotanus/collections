@@ -11,7 +11,7 @@
  * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
  * @example
  * @code
- * #include "list.h"
+ * #include "list/list.h"
  * 
  * int main(void)
  * {

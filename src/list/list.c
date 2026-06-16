@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "list.h"
+#include "list/list.h"
 
 #define INITIAL_CAPACITY 32
 

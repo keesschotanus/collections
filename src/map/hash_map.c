@@ -17,9 +17,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "list.h"
-#include "doubly_linked_list.h"
-#include "hash_map.h"
+#include "list/list.h"
+#include "list/doubly_linked_list.h"
+#include "map/hash_map.h"
+#include "util/hash.h"
 
 #define INITIAL_BUCKET_CAPACITY 10
 
@@ -36,7 +37,6 @@ struct bucket_list {
 	dllist list;
 };
 
-static size_t hash(const void *key, size_t key_size, size_t num_buckets);
 static dllist get_bucket(hash_map hmap, const void *key);
 static dllnode get_node_from_bucket(hash_map hmap, dllist bucket, const void *key);
 
@@ -73,7 +73,7 @@ bool hash_map_put(hash_map hmap, const void *key, const void *value) {
 	if (hmap == NULL || key == NULL || value == NULL)
 		return false;
 
-	size_t bucket_index = hash(key, hmap->key_size, hmap->bucket_list_size);
+	size_t bucket_index = hash(key, hmap->key_size) % hmap->bucket_list_size;
 	dllist bucket = *(dllist *)list_get(hmap->bucket_list, bucket_index);
 	if (bucket == NULL)
 	{
@@ -143,23 +143,11 @@ void hash_map_free(hash_map hmap) {
 	free(hmap);
 }
 
-static size_t hash(const void *key, size_t key_size, size_t num_buckets) {	
-	size_t hash_value = 5381;
-	const unsigned char *ptr = (const unsigned char *)key;
-
-	for (size_t i = 0; i < key_size; ++i)
-	{
-		hash_value = ((hash_value << 5) + hash_value) + *(ptr + i);
-	}
-
-	return hash_value % num_buckets;
-}
-
 static dllist get_bucket(hash_map hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
 
-	size_t bucket_index = hash(key, hmap->key_size, hmap->bucket_list_size);
+	size_t bucket_index = hash(key, hmap->key_size) % hmap->bucket_list_size;
 	return *(dllist *)list_get(hmap->bucket_list, bucket_index);
 }
 

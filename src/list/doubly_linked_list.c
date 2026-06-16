@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "doubly_linked_list.h"
+#include "list/doubly_linked_list.h"
 
 #define INITIAL_CAPACITY 32
 

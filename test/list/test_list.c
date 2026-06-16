@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "list.h"
+#include "list/list.h"
 
 static void test_int_list(void);
 static void test_list_with_invalid_element_size(void);

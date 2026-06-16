@@ -14,7 +14,7 @@
  * #include <string.h>
  * #include <assert.h>
  * 
- * #include "hash_map.h"
+ * #include "map/hash_map.h"
  * 
  * struct person {
  *     int id;

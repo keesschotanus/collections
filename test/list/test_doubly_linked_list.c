@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "doubly_linked_list.h"
+#include "list/doubly_linked_list.h"
 
 static void test_list(void);
 static void test_list_find(void);
