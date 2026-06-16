@@ -93,13 +93,6 @@ static: $(STATIC_LIB)
 
 shared: $(SHARED_LIB)
 
-# Convenience targets to build libraries
-libs: $(STATIC_LIB) $(SHARED_LIB)
-
-static: $(STATIC_LIB)
-
-shared: $(SHARED_LIB)
-
 # Run tests
 test: $(TEST_EXE)
 	./$(TEST_EXE)
@@ -129,9 +122,9 @@ install-shared: $(SHARED_LIB)
 install: install-static install-shared install-headers
 
 # Generate documentation (placeholder)
-apidoc: $(INC_DIR)/*.h
+apidoc: 
 	doxygen Doxyfile
 
 # Phony targets
-.PHONY: all test clean libs static shared install install-static install-shared install-headers gendoc
+.PHONY: all test clean libs static shared install install-static install-shared install-headers apidoc
 

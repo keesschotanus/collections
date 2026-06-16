@@ -1,7 +1,8 @@
 /**
- * @file binary_tree.h
+ * @file binary_search_tree.h
  * @brief A simple generic binary search tree implementation.
- * @details A binary search tree is a hierarchical data structure where each node has at most two children.
+ * @details A <a href="https://en.wikipedia.org/wiki/Binary_search_tree">Binary Search Tree</a>
+ * is a hierarchical data structure where each node has at most two children.
  * The tree can be traversed in various ways, such as in-order, pre-order, and post-order.
  * Elements can be inserted and searched for in the tree.
  * 
