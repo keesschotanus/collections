@@ -13,6 +13,8 @@
  * This list can pose as a stack by using dllist_push() and dllist_pop().
  * 
  * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
+ * 
+ * @see doubly_linked_list.c for implementation details.
  * @example
  * @code
  * #include "list/doubly_linked_list.h"
@@ -63,9 +65,9 @@
 #include <stddef.h>
 
 
-typedef struct doubly_linked_list *dllist;
+typedef struct doubly_linked_list *dllist_t;
 
-typedef struct doubly_linked_list_node *dllnode;
+typedef struct doubly_linked_list_node *dllnode_t;
 
 /**
  * @brief Creates a new doubly linked list.
@@ -74,7 +76,7 @@ typedef struct doubly_linked_list_node *dllnode;
  * @param element_size Size of each element in bytes.
  * @return Pointer to the new list, or NULL if allocation failed or element_size is 0.
  */
-dllist dllist_create(size_t initial_capacity, size_t element_size);
+dllist_t dllist_create(size_t initial_capacity, size_t element_size);
 
 /**
  * @brief Inserts an element before the specified node.
@@ -85,7 +87,7 @@ dllist dllist_create(size_t initial_capacity, size_t element_size);
  * @param element Pointer to the element to insert.
  * @return true if successful, false if allocation failed or list is NULL.
  */
-bool dllist_insert_before(dllist l, dllnode node, const void *element);
+bool dllist_insert_before(dllist_t l, dllnode_t node, const void *element);
 
 /**
  * @brief Inserts an element after the specified node.
@@ -96,7 +98,7 @@ bool dllist_insert_before(dllist l, dllnode node, const void *element);
  * @param element Pointer to the element to insert.
  * @return true if successful, false if allocation failed or list is NULL.
  */
-bool dllist_insert_after(dllist l, dllnode node, const void *element);
+bool dllist_insert_after(dllist_t l, dllnode_t node, const void *element);
 
 /**
  * @brief Treats this list as a stack and pushes an element to the end.
@@ -105,7 +107,7 @@ bool dllist_insert_after(dllist l, dllnode node, const void *element);
  * @param element Pointer to the element to push.
  * @return true if successful, false if allocation failed or list is NULL.
  */
-bool dllist_push(dllist l, const void *element);
+bool dllist_push(dllist_t l, const void *element);
 
 /**
  * @brief Treats this list as a stack and pops an element from the end.
@@ -113,7 +115,7 @@ bool dllist_push(dllist l, const void *element);
  * @param l Pointer to the list.
  * @return Pointer to the popped data, or NULL if the list is empty or NULL.
  */
-void *dllist_pop(dllist l);
+void *dllist_pop(dllist_t l);
 
 /**
  * @brief Treats this list as a stack and peeks at the top element.
@@ -121,7 +123,7 @@ void *dllist_pop(dllist l);
  * @param l Pointer to the list.
  * @return Pointer to the popped data, or NULL if the list is empty or NULL.
  */
-void *dllist_peek(dllist l);
+void *dllist_peek(dllist_t l);
 
 /**
  * @brief Gets the first node in the list.
@@ -129,7 +131,7 @@ void *dllist_peek(dllist l);
  * @param l Pointer to the list.
  * @return Pointer to the first node, or NULL if the list is empty.
  */
-dllnode dllist_first(dllist l);
+dllnode_t dllist_first(dllist_t l);
 
 /**
  * @brief Gets the last node in the list.
@@ -137,7 +139,7 @@ dllnode dllist_first(dllist l);
  * @param l Pointer to the list.
  * @return Pointer to the last node, or NULL if the list is empty.
  */
-dllnode dllist_last(dllist l);
+dllnode_t dllist_last(dllist_t l);
 
 /**
  * @brief Gets the node after the supplied node.
@@ -146,7 +148,7 @@ dllnode dllist_last(dllist l);
  * @param node The current node.
  * @return Pointer to the next node, or NULL if node is NULL or it's the last node.
  */
-dllnode dllist_next(dllist l, dllnode node);
+dllnode_t dllist_next(dllist_t l, dllnode_t node);
 
 /**
  * @brief Gets the node before the supplied node.
@@ -155,7 +157,7 @@ dllnode dllist_next(dllist l, dllnode node);
  * @param node The current node.
  * @return Pointer to the previous node, or NULL if node is NULL or it's the first node.
  */
-dllnode dllist_prev(dllist l, dllnode node);
+dllnode_t dllist_prev(dllist_t l, dllnode_t node);
 
 /**
  * @brief Removes a node from the list.
@@ -164,7 +166,7 @@ dllnode dllist_prev(dllist l, dllnode node);
  * @param node The node to remove.
  * @return true if successful, false if list or node is NULL.
  */
-bool dllist_remove(dllist l, dllnode node);
+bool dllist_remove(dllist_t l, dllnode_t node);
 
 /**
  * @brief Finds the first element in the list using a comparison function.
@@ -173,7 +175,7 @@ bool dllist_remove(dllist l, dllnode node);
  * @param element Pointer to the element to find.
  * @return Pointer to the found node, or NULL if not found.
  */
-dllnode dllist_find(dllist l, const void *element, int (*cmp)(const void *, const void *));
+dllnode_t dllist_find(dllist_t l, const void *element, int (*cmp)(const void *, const void *));
 
 /**
  * @brief Visits each element in the list using the provided function.
@@ -181,7 +183,7 @@ dllnode dllist_find(dllist l, const void *element, int (*cmp)(const void *, cons
  * @param l Pointer to the list.
  * @param visit Pointer to the visit function, called for each element.
  */
-void dllist_visit(dllist l, void (*visit)(const void *));
+void dllist_visit(dllist_t l, void (*visit)(const void *));
 
 /**
  * @brief Gets the data from a node.
@@ -189,7 +191,7 @@ void dllist_visit(dllist l, void (*visit)(const void *));
  * @param node The node to get the data from.
  * @return Pointer to the data, or NULL if node is NULL.
  */
-const void* dllist_node_data(dllnode node);
+const void* dllist_node_data(dllnode_t node);
 
 /**
  * @brief Frees the memory allocated for the list.
@@ -198,6 +200,6 @@ const void* dllist_node_data(dllnode node);
  *
  * @param l Pointer to the list to free.
  */
-void dllist_free(dllist l);
+void dllist_free(dllist_t l);
 
 #endif

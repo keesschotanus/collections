@@ -1,6 +1,7 @@
 /**
  * @file hash.h
  * @brief Hash function.
+ * @see hash.c for implementation details.
  */
 
 #ifndef HASH_H

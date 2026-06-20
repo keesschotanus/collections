@@ -34,27 +34,26 @@ struct hash_map
 };
 
 struct bucket_list {
-	dllist list;
+	dllist_t list;
 };
 
-static dllist get_bucket(hash_map hmap, const void *key);
-static dllnode get_node_from_bucket(hash_map hmap, dllist bucket, const void *key);
+static dllist_t get_bucket(hash_map_t hmap, const void *key);
+static dllnode_t get_node_from_bucket(hash_map_t hmap, dllist_t bucket, const void *key);
 
-hash_map hash_map_create(size_t buckets, size_t key_size, size_t value_size) {
+hash_map_t hash_map_create(size_t buckets, size_t key_size, size_t value_size) {
 	if (buckets == 0 || key_size == 0 || value_size == 0)
 		return NULL;
 
-	list bucket_list = list_create(buckets, sizeof(dllist));
+	list_t bucket_list = list_create(buckets, sizeof(dllist_t));
 	if (bucket_list == NULL)
 		return NULL;
-
-	dllist null_bucket = NULL;		
+	dllist_t null_bucket = NULL;        
 	for (size_t i = 0; i < buckets; i++) {
 		
 		list_append(bucket_list, &null_bucket);
 	}
 
-	struct hash_map *hmap = malloc(sizeof(struct hash_map));
+		hash_map_t hmap = malloc(sizeof *hmap);
 	if (hmap == NULL)
 	{
 		list_free(bucket_list);
@@ -69,12 +68,12 @@ hash_map hash_map_create(size_t buckets, size_t key_size, size_t value_size) {
 	return hmap;
 }
 
-bool hash_map_put(hash_map hmap, const void *key, const void *value) {
+bool hash_map_put(hash_map_t hmap, const void *key, const void *value) {
 	if (hmap == NULL || key == NULL || value == NULL)
 		return false;
 
 	size_t bucket_index = hash(key, hmap->key_size) % hmap->bucket_list_size;
-	dllist bucket = *(dllist *)list_get(hmap->bucket_list, bucket_index);
+	dllist_t bucket = *(dllist_t *)list_get(hmap->bucket_list, bucket_index);
 	if (bucket == NULL)
 	{
 		// Create a new bucket
@@ -96,37 +95,37 @@ bool hash_map_put(hash_map hmap, const void *key, const void *value) {
 	return dllist_push(bucket, &entry);
 }
 
-void *hash_map_get(hash_map hmap, const void *key) {
+void *hash_map_get(hash_map_t hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
 
-	dllist bucket = get_bucket(hmap, key);
+	dllist_t bucket = get_bucket(hmap, key);
 	if (bucket == NULL)
 		return NULL;
 
-	dllnode node = get_node_from_bucket(hmap, bucket, key);
+	dllnode_t node = get_node_from_bucket(hmap, bucket, key);
 	if (node == NULL)
 		return NULL;
 
 	return (char *)dllist_node_data(node) + hmap->key_size;
 }
 
-bool hash_map_remove(hash_map hmap, const void *key) {
+bool hash_map_remove(hash_map_t hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
 
-	dllist bucket = get_bucket(hmap, key);
+	dllist_t bucket = get_bucket(hmap, key);
 	if (bucket == NULL)
 		return NULL;
 
-	dllnode node = get_node_from_bucket(hmap, bucket, key);
+	dllnode_t node = get_node_from_bucket(hmap, bucket, key);
 	if (node == NULL)
 		return NULL;
 
 	return dllist_remove(bucket, node);
 }
 
-void hash_map_free(hash_map hmap) {
+void hash_map_free(hash_map_t hmap) {
 	if (hmap == NULL)
 		return;
 
@@ -134,7 +133,7 @@ void hash_map_free(hash_map hmap) {
 	size_t buckets = list_size(hmap->bucket_list);
 	for (size_t i = 0; i < buckets; i++)
 	{
-		dllist bucket = *(dllist *)list_get(hmap->bucket_list, i);
+		dllist_t bucket = *(dllist_t *)list_get(hmap->bucket_list, i);
 		dllist_free(bucket);
 	}
 
@@ -143,16 +142,16 @@ void hash_map_free(hash_map hmap) {
 	free(hmap);
 }
 
-static dllist get_bucket(hash_map hmap, const void *key) {
+static dllist_t get_bucket(hash_map_t hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
 
 	size_t bucket_index = hash(key, hmap->key_size) % hmap->bucket_list_size;
-	return *(dllist *)list_get(hmap->bucket_list, bucket_index);
+	return *(dllist_t *)list_get(hmap->bucket_list, bucket_index);
 }
 
-static dllnode get_node_from_bucket(hash_map hmap, dllist bucket, const void *key) {
-	dllnode node = dllist_first(bucket);
+static dllnode_t get_node_from_bucket(hash_map_t hmap, dllist_t bucket, const void *key) {
+	dllnode_t node = dllist_first(bucket);
 	while (node != NULL) {
 		const void *entry = dllist_node_data(node);
 		// Compare only the key part of the entry

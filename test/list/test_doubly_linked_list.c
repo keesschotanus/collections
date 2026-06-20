@@ -18,8 +18,8 @@ static void test_list_visit(void);
 static void test_list_remove(void);
 
 static int compare_ints(const void *a, const void *b);
-static dllist create_list_with_elements_2_4_6_8();
-static void verify_list_contents(dllist l, const int *expected_values, size_t expected_size);
+static dllist_t create_list_with_elements_2_4_6_8();
+static void verify_list_contents(dllist_t l, const int *expected_values, size_t expected_size);
 
 int test_doubly_linked_list(void)
 {
@@ -36,7 +36,7 @@ int test_doubly_linked_list(void)
 
 static void test_list(void)
 {
-	dllist int_list = create_list_with_elements_2_4_6_8();
+	dllist_t int_list = create_list_with_elements_2_4_6_8();
 	int expected_values[] = {2, 4, 6, 8};
 	verify_list_contents(int_list, expected_values, sizeof(expected_values) / sizeof(expected_values[0]));
 	dllist_free(int_list);
@@ -44,11 +44,11 @@ static void test_list(void)
 
 static void test_list_find(void)
 {
-	dllist int_list = create_list_with_elements_2_4_6_8();
+	dllist_t int_list = create_list_with_elements_2_4_6_8();
 
 	for (int i = 2; i <= 8; i += 2)
 	{
-		dllnode node = dllist_find(int_list, &i, compare_ints);
+		dllnode_t node = dllist_find(int_list, &i, compare_ints);
 		assert(node != NULL);
 		const void* data = dllist_node_data(node);
 		assert(*(int *)data == i);
@@ -62,7 +62,7 @@ static void test_list_find(void)
 
 static void test_list_insert(void)
 {
-	dllist int_list = create_list_with_elements_2_4_6_8();
+	dllist_t int_list = create_list_with_elements_2_4_6_8();
 
 	// Insert element at beginning of list
 	dllist_insert_before(int_list, NULL, &(int){1});
@@ -71,7 +71,7 @@ static void test_list_insert(void)
 	dllist_insert_after(int_list, NULL, &(int){10});
 
 	// Find element somewhere in the middle of the list and insert before and after it 
-	dllnode node = dllist_find(int_list, &(int){6}, compare_ints);
+	dllnode_t node = dllist_find(int_list, &(int){6}, compare_ints);
 	assert(node != NULL);
 	dllist_insert_before(int_list, node, &(int){5});
 	dllist_insert_after(int_list, node, &(int){7});
@@ -84,7 +84,7 @@ static void test_list_insert(void)
 
 static void test_list_push_and_pop_and_peek(void)
 {
-	dllist int_list = dllist_create(2, sizeof(int));
+	dllist_t int_list = dllist_create(2, sizeof(int));
 	assert(int_list != NULL);
 
 	// Push elements to the list
@@ -121,7 +121,7 @@ static void visit_int(const void *data)
 
 static void test_list_visit(void)
 {
-	dllist int_list = create_list_with_elements_2_4_6_8();
+	dllist_t int_list = create_list_with_elements_2_4_6_8();
 	dllist_visit(int_list, visit_int);
 	assert(visited_sum == 2 + 4 + 6 + 8);
 
@@ -131,13 +131,13 @@ static void test_list_visit(void)
 
 static void test_list_remove(void)
 {
-	dllist int_list = create_list_with_elements_2_4_6_8();
+	dllist_t int_list = create_list_with_elements_2_4_6_8();
 
 	int remove_elements[] = {6 ,2, 4, 8};
 	for (size_t i = 0; i < sizeof(remove_elements) / sizeof(remove_elements[0]); i++)
 	{
 		int target = remove_elements[i];
-		dllnode node = dllist_find(int_list, &target, compare_ints);
+		dllnode_t node = dllist_find(int_list, &target, compare_ints);
 		assert(node != NULL);
 		assert(dllist_remove(int_list, node));
 		node = dllist_find(int_list, &target, compare_ints);
@@ -158,8 +158,8 @@ static int compare_ints(const void *a, const void *b)
 	return (*int_a > *int_b) - (*int_a < *int_b);
 }
 
-static dllist create_list_with_elements_2_4_6_8() {
-	dllist l = dllist_create(2, sizeof(int));
+static dllist_t create_list_with_elements_2_4_6_8() {
+	dllist_t l = dllist_create(2, sizeof(int));
 	assert(l != NULL);
 
 	for (int i = 2; i <= 8; i += 2)
@@ -170,8 +170,8 @@ static dllist create_list_with_elements_2_4_6_8() {
 	return l;
 }
 
-static void verify_list_contents(dllist l, const int *expected_values, size_t expected_size) {
-	dllnode node = dllist_first(l);
+static void verify_list_contents(dllist_t l, const int *expected_values, size_t expected_size) {
+	dllnode_t node = dllist_first(l);
 	size_t idx = 0;
 	while (node != NULL)
 	{

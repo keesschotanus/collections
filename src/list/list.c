@@ -25,7 +25,7 @@ struct list
 	size_t element_size;
 };
 
- list list_create(size_t initial_capacity, size_t element_size)
+ list_t list_create(size_t initial_capacity, size_t element_size)
 {
 	if (element_size == 0)
 		return NULL;
@@ -33,7 +33,7 @@ struct list
 	// Prevent zero byte allocation by using a default initial capacity	
 	initial_capacity = initial_capacity > 0 ? initial_capacity : INITIAL_CAPACITY;
 
-	struct list *l = malloc(sizeof *l);
+	list_t l = malloc(sizeof *l);
 	if (l == NULL)
 		return NULL;
 
@@ -50,7 +50,7 @@ struct list
 	return l;
 }
 
-bool list_append(list l, const void *element)
+bool list_append(list_t l, const void *element)
 {
 	if (l == NULL || element == NULL)
 		return false;
@@ -75,7 +75,7 @@ bool list_append(list l, const void *element)
 	return true;
 }
 
-void *list_get(list l, size_t idx)
+void *list_get(list_t l, size_t idx)
 {
 	if (l == NULL || idx >= l->number_of_elements)
 		return NULL;
@@ -83,7 +83,7 @@ void *list_get(list l, size_t idx)
 	return (char *)l->data + idx * l->element_size;
 }
 
-bool list_set(list l, size_t idx, const void *element)
+bool list_set(list_t l, size_t idx, const void *element)
 {
 	if (l == NULL || element == NULL || idx >= l->number_of_elements)
 		return false;
@@ -92,7 +92,7 @@ bool list_set(list l, size_t idx, const void *element)
 	return true;
 }
 
-void list_visit(list l, void (*visit)(const void *))
+void list_visit(list_t l, void (*visit)(const void *))
 {
 	if (l == NULL || visit == NULL)
 		return;
@@ -103,7 +103,7 @@ void list_visit(list l, void (*visit)(const void *))
 	}
 }
 
-void list_free(list l)
+void list_free(list_t l)
 {
 	if (l == NULL)
 		return;
@@ -112,12 +112,12 @@ void list_free(list l)
 	free(l);
 }
 
-size_t list_size(list l)
+size_t list_size(list_t l)
 {
 	return l ? l->number_of_elements : 0;
 }
 
-void sort_list(list l, int (*cmp)(const void *, const void *))
+void sort_list(list_t l, int (*cmp)(const void *, const void *))
 {
 	if (l == NULL || cmp == NULL)
 		return;

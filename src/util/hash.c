@@ -1,10 +1,9 @@
 /**
  * @file hash.c
  * @brief Hash function implementation using the djb2 algorithm.
- * @details This hash function is a widely used and provides good distribution.
+ * @details This hash function is widely used and provides good distribution.
  * It was created by Dan Bernstein and is known for its simplicity and performance.
  */
-
 
 #include <stddef.h>
 

@@ -9,6 +9,8 @@
  * consider using the doubly_linked_list.h instead.
  * 
  * Don't forget to free the list with list_free() when you're done to avoid memory leaks.
+ * 
+ * @see list.c for implementation details.
  * @example
  * @code
  * #include "list/list.h"
@@ -44,7 +46,7 @@
 #include <stddef.h>
 
 
-typedef struct list *list;
+typedef struct list *list_t;
 
 /**
  * @brief Creates a new dynamic list.
@@ -55,7 +57,7 @@ typedef struct list *list;
  * @param element_size Size of each element in bytes.
  * @return Pointer to the new list, or NULL if allocation failed or element_size is 0.
  */
-list list_create(size_t initial_capacity, size_t element_size);
+list_t list_create(size_t initial_capacity, size_t element_size);
 
 /**
  * @brief Appends an element to the end of the list.
@@ -66,7 +68,7 @@ list list_create(size_t initial_capacity, size_t element_size);
  * @param element Pointer to the element to append.
  * @return true if successful, false if allocation failed or list is NULL.
  */
-bool list_append(list l, const void *element);
+bool list_append(list_t l, const void *element);
 
 /**
  * @brief Retrieves an element from the list at the specified index.
@@ -75,7 +77,7 @@ bool list_append(list l, const void *element);
  * @param idx Index of the element to retrieve (0-based).
  * @return Pointer to the element, or NULL if index is out of bounds or list is NULL.
  */
-void *list_get(list l, size_t idx);
+void *list_get(list_t l, size_t idx);
 
 /**
  * @brief Sets the value of an element at the specified index.
@@ -85,7 +87,7 @@ void *list_get(list l, size_t idx);
  * @param element Pointer to the new element value. Must not be NULL.
  * @return true if successful, false if index is out of bounds or list/element is NULL.
  */
-bool list_set(list l, size_t idx, const void *element);
+bool list_set(list_t l, size_t idx, const void *element);
 
 /**
  * @brief Visits each element in the list using the provided function.
@@ -93,7 +95,7 @@ bool list_set(list l, size_t idx, const void *element);
  * @param l Pointer to the list.
  * @param visit Pointer to the visit function, called for each element.
  */
-void list_visit(list l, void (*visit)(const void *));
+void list_visit(list_t l, void (*visit)(const void *));
 
 /**
  * @brief Frees the memory allocated for the list.
@@ -102,7 +104,7 @@ void list_visit(list l, void (*visit)(const void *));
  *
  * @param l Pointer to the list to free.
  */
-void list_free(list l);
+void list_free(list_t l);
 
 /**
  * @brief Returns the number of elements currently in the list.
@@ -110,7 +112,7 @@ void list_free(list l);
  * @param l Pointer to the list.
  * @return Number of elements in the list, or 0 if list is NULL.
  */
-size_t list_size(list l);
+size_t list_size(list_t l);
 
 /**
  * @brief Sorts the elements in the list using the provided comparison function.
@@ -120,6 +122,6 @@ size_t list_size(list l);
  *  The function should return a negative value if the first argument is less than the second,
  *  zero if they are equal, and a positive value if the first argument is greater than the second.
  */
-void sort_list(list l, int (*cmp)(const void *, const void *));
+void sort_list(list_t l, int (*cmp)(const void *, const void *));
 
 #endif

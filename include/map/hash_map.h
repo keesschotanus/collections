@@ -7,6 +7,8 @@
  * Storing and retrieving values is very fast, but the order of the elements is not guaranteed.
  * 
  * Don't forget to free the hash map with hash_map_free() when you're done to avoid memory leaks.
+ * 
+ * @see hash_map.c for implementation details.
  * @example
  * @code
  * #include <stdio.h>
@@ -55,7 +57,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef struct hash_map *hash_map;
+typedef struct hash_map *hash_map_t;
 
 /**
  * @brief Creates a new hash map.
@@ -65,7 +67,7 @@ typedef struct hash_map *hash_map;
  * @param value_size Size of each value in bytes.
  * @return Pointer to the new hash map, or NULL if allocation failed or sizes are 0.
  */
-hash_map hash_map_create(size_t buckets, size_t key_size, size_t value_size);
+hash_map_t hash_map_create(size_t buckets, size_t key_size, size_t value_size);
 
 /**
  * @brief Retrieves the value associated with a key in the hash map.
@@ -74,7 +76,7 @@ hash_map hash_map_create(size_t buckets, size_t key_size, size_t value_size);
  * @param key Pointer to the key to search for. Must not be NULL.
  * @return Pointer to the value if found, NULL otherwise.
  */
-void *hash_map_get(hash_map hmap, const void *key);
+void *hash_map_get(hash_map_t hmap, const void *key);
 
 /**
  * @brief Inserts or updates a key-value pair in the hash map.
@@ -84,7 +86,7 @@ void *hash_map_get(hash_map hmap, const void *key);
  * @param value Pointer to the value to associate with the key. Must not be NULL.
  * @return true if successful, false if allocation failed or hmap/key/value is NULL.
  */
-bool hash_map_put(hash_map hmap, const void *key, const void *value);
+bool hash_map_put(hash_map_t hmap, const void *key, const void *value);
 
 /**
  * @brief Removes a key-value pair from the hash map.
@@ -93,13 +95,13 @@ bool hash_map_put(hash_map hmap, const void *key, const void *value);
  * @param key Pointer to the key to remove. Must not be NULL.
  * @return true if found and removed, false otherwise.
  */
-bool hash_map_remove(hash_map hmap, const void *key);
+bool hash_map_remove(hash_map_t hmap, const void *key);
 
 /**
  * @brief Frees the memory used by the hash map.
  *
  * @param hmap Pointer to the hash map to free. If NULL, does nothing.
  */
-void hash_map_free(hash_map hmap);
+void hash_map_free(hash_map_t hmap);
 
 #endif

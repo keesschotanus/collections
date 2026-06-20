@@ -29,7 +29,7 @@ void test_hash_map(void)
 }
 
 static void test_hash_map_int_to_int(void) {
-        hash_map hmap = hash_map_create(1, sizeof(int), sizeof(int));
+        hash_map_t hmap = hash_map_create(1, sizeof(int), sizeof(int));
         assert(hmap != NULL);
 
         for (int i = 0; i < 100; i++) {
@@ -48,7 +48,7 @@ static void test_hash_map_int_to_int(void) {
 
 static void test_hash_map_int_to_struct(void)
 {
-        hash_map hmap = hash_map_create(10, sizeof(int), sizeof(struct person));
+        hash_map_t hmap = hash_map_create(10, sizeof(int), sizeof(struct person));
         assert(hmap != NULL);
 
         struct person p1 = {1, "Alice", "alice@example.com"};

@@ -37,7 +37,7 @@ int test_list(void)
 
 static void test_int_list(void)
 {
-	list int_list = list_create(10, sizeof(int));
+	list_t int_list = list_create(10, sizeof(int));
 	assert(int_list != NULL);
 	assert(list_size(int_list) == 0);
 
@@ -65,7 +65,7 @@ static void test_int_list(void)
 	list_free(int_list);
 
 	// Test sorting
-	list unsorted = list_create(10, sizeof(int));
+	list_t unsorted = list_create(10, sizeof(int));
 	int values[] = {5, 3, 8, 1, 4};
 	for (size_t i = 0; i < sizeof(values) / sizeof(values[0]); i++)
 		list_append(unsorted, &values[i]);
@@ -82,13 +82,13 @@ static void test_int_list(void)
 
 static void test_list_with_invalid_element_size(void)
 {
-	list invalid = list_create(10, 0);
+	list_t invalid = list_create(10, 0);
 	assert(invalid == NULL);
 }
 
 static void test_list_with_zero_capacity(void)
 {
-	list l = list_create(0, sizeof(int));
+	list_t l = list_create(0, sizeof(int));
 	assert(l != NULL);
 	assert(list_size(l) == 0);
 
@@ -115,7 +115,7 @@ static void test_list_with_null_operations(void)
 void test_list_with_out_of_bounds_values(void)
 {
 	// Test out of bounds
-	list l = list_create(5, sizeof(int));
+	list_t l = list_create(5, sizeof(int));
 	assert(l != NULL);
 	assert(list_get(l, 0) == NULL); // empty list
 	assert(list_set(l, 0, NULL) == false);
@@ -130,7 +130,7 @@ void test_list_with_out_of_bounds_values(void)
 
 static void test_double_list(void)
 {
-	list double_list = list_create(10, sizeof(double));
+	list_t double_list = list_create(10, sizeof(double));
 	assert(double_list != NULL);
 	assert(list_size(double_list) == 0);
 
@@ -161,7 +161,7 @@ static void visit_double(const void *data)
 
 static void test_list_visit(void)
 {
-	list double_list = list_create(10, sizeof(double));
+	list_t double_list = list_create(10, sizeof(double));
 	list_append(double_list, &(double){2.25});
 	list_append(double_list, &(double){4.50});
 	list_append(double_list, &(double){6.25});

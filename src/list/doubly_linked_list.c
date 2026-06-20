@@ -38,42 +38,35 @@
 #include <string.h>
 
 #include "list/doubly_linked_list.h"
+#include "util/chunk.h"
 
 #define INITIAL_CAPACITY 32
 
-struct chunk
-{
-	struct chunk *next;
-	char *memory;
-	size_t size;
-	size_t used;
-};
-
 struct doubly_linked_list_node
 {
-	struct doubly_linked_list_node *prev;
-	struct doubly_linked_list_node *next;
+	dllnode_t prev;
+	dllnode_t next;
 	char data[]; // flexible array member (must be last)
 };
 
 struct doubly_linked_list
 {
-	struct doubly_linked_list_node *head; // Dummy head node for circular list
+	dllnode_t head; // Dummy head node for circular list
 	size_t element_size;
-	struct chunk *chunks;
-	struct doubly_linked_list_node *free_list;
+	chunk_t chunks;
+	dllnode_t free_list;
 	size_t initial_capacity;
 };
 
-static struct doubly_linked_list_node *allocate_node(struct doubly_linked_list *l);
-static void free_node(struct doubly_linked_list *l, struct doubly_linked_list_node *node);
+static dllnode_t allocate_node(dllist_t l);
+static void free_node(dllist_t l, dllnode_t node);
 
-dllist dllist_create(size_t initial_capacity, size_t element_size)
+dllist_t dllist_create(size_t initial_capacity, size_t element_size)
 {
 	if (element_size == 0)
 		return NULL;
 
-	struct doubly_linked_list *l = malloc(sizeof *l);
+	dllist_t l = malloc(sizeof *l);
 	if (l == NULL)
 	{
 		errno = ENOMEM;
@@ -98,7 +91,7 @@ dllist dllist_create(size_t initial_capacity, size_t element_size)
 	return l;
 }
 
-bool dllist_insert_before(dllist l, dllnode node, const void *element)
+bool dllist_insert_before(dllist_t l, dllnode_t node, const void *element)
 {
 	if (l == NULL || element == NULL)
 		return false;
@@ -106,7 +99,7 @@ bool dllist_insert_before(dllist l, dllnode node, const void *element)
 	if (node == NULL)
 		node = l->head->next;
 
-	struct doubly_linked_list_node *new_node = allocate_node(l);
+	dllnode_t new_node = allocate_node(l);
 	if (new_node == NULL)
 	{
 		errno = ENOMEM;
@@ -122,7 +115,7 @@ bool dllist_insert_before(dllist l, dllnode node, const void *element)
 	return true;
 }
 
-bool dllist_insert_after(dllist l, dllnode node, const void *element)
+bool dllist_insert_after(dllist_t l, dllnode_t node, const void *element)
 {
 	if (l == NULL || element == NULL)
 		return false;
@@ -130,7 +123,7 @@ bool dllist_insert_after(dllist l, dllnode node, const void *element)
 	if (node == NULL)
 		node = l->head->prev;
 
-	struct doubly_linked_list_node *new_node = allocate_node(l);
+	dllnode_t new_node = allocate_node(l);
 	if (new_node == NULL)
 	{
 		errno = ENOMEM;
@@ -146,59 +139,59 @@ bool dllist_insert_after(dllist l, dllnode node, const void *element)
 	return true;
 }
 
-bool dllist_push(dllist l, const void *element)
+bool dllist_push(dllist_t l, const void *element)
 {
 	return dllist_insert_after(l, NULL, element);
 }
 
-void *dllist_pop(dllist l)
+void *dllist_pop(dllist_t l)
 {
 	if (l == NULL || l->head->prev == l->head)
 		return NULL;
 
-	dllnode last_node = l->head->prev;
+	dllnode_t last_node = l->head->prev;
 	dllist_remove(l, last_node);
 	return last_node->data;
 }
 
-void *dllist_peek(dllist l)
+void *dllist_peek(dllist_t l)
 {
 	if (l == NULL || l->head->prev == l->head)
 		return NULL;
 
-	dllnode last_node = l->head->prev;
+	dllnode_t last_node = l->head->prev;
 	return last_node->data;
 }
 
-dllnode dllist_first(dllist l)
+dllnode_t dllist_first(dllist_t l)
 {
 	if (l == NULL || l->head->next == l->head)
 		return NULL;
 	return l->head->next;
 }
 
-dllnode dllist_last(dllist l)
+dllnode_t dllist_last(dllist_t l)
 {
 	if (l == NULL || l->head->prev == l->head)
 		return NULL;
 	return l->head->prev;
 }
 
-dllnode dllist_next(dllist l, dllnode node)
+dllnode_t dllist_next(dllist_t l, dllnode_t node)
 {
 	if (l == NULL || node == NULL || node->next == l->head)
 		return NULL;
 	return node->next;
 }
 
-dllnode dllist_prev(dllist l, dllnode node)
+dllnode_t dllist_prev(dllist_t l, dllnode_t node)
 {
 	if (l == NULL || node == NULL || node->prev == l->head)
 		return NULL;
 	return node->prev;
 }
 
-bool dllist_remove(dllist l, dllnode node)
+bool dllist_remove(dllist_t l, dllnode_t node)
 {
 	if (l == NULL || node == NULL)
 		return false;
@@ -210,12 +203,12 @@ bool dllist_remove(dllist l, dllnode node)
 	return true;
 }
 
-dllnode dllist_find(dllist l, const void *element, int (*cmp)(const void *, const void *))
+dllnode_t dllist_find(dllist_t l, const void *element, int (*cmp)(const void *, const void *))
 {
 	if (l == NULL || element == NULL || cmp == NULL)
 		return NULL;
 
-	struct doubly_linked_list_node *current = l->head->next;
+	dllnode_t current = l->head->next;
 	while (current != l->head)
 	{
 		if (cmp(current->data, element) == 0)
@@ -228,12 +221,12 @@ dllnode dllist_find(dllist l, const void *element, int (*cmp)(const void *, cons
 	return NULL;
 }
 
-void dllist_visit(dllist l, void (*visit)(const void *))
+void dllist_visit(dllist_t l, void (*visit)(const void *))
 {
 	if (l == NULL || visit == NULL)
 		return;
 
-	struct doubly_linked_list_node *current = l->head->next;
+	dllnode_t current = l->head->next;
 	while (current != l->head)
 	{
 		visit(current->data);
@@ -241,7 +234,7 @@ void dllist_visit(dllist l, void (*visit)(const void *))
 	}
 }
 
-const void *dllist_node_data(dllnode node)
+const void *dllist_node_data(dllnode_t node)
 {
 	if (node == NULL)
 		return NULL;
@@ -249,35 +242,26 @@ const void *dllist_node_data(dllnode node)
 }
 
 
-void dllist_free(dllist l)
+void dllist_free(dllist_t l)
 {
 	if (l == NULL)
 		return;
-
-	// free all chunks
-	struct chunk *chunk = l->chunks;
-	while (chunk != NULL)
-	{
-		struct chunk *next = chunk->next;
-		free(chunk->memory);
-		free(chunk);
-		chunk = next;
-	}
+	chunk_free(l->chunks);
 	free(l);
 }
 
-static void free_node(struct doubly_linked_list *l, struct doubly_linked_list_node *node)
+static void free_node(dllist_t l, dllnode_t node)
 {
 	node->next = l->free_list;
 	l->free_list = node;
 }
 
-static struct doubly_linked_list_node *allocate_node(struct doubly_linked_list *l)
+static dllnode_t allocate_node(dllist_t l)
 {
 	if (l->free_list != NULL)
 	{
 		// reuse node from free list
-		struct doubly_linked_list_node *node = l->free_list;
+		dllnode_t node = l->free_list;
 		l->free_list = node->next;
 		return node;
 	}
@@ -285,25 +269,15 @@ static struct doubly_linked_list_node *allocate_node(struct doubly_linked_list *
 	if (l->chunks == NULL || l->chunks->used + node_size > l->chunks->size)
 	{
 		// allocate new chunk
-		struct chunk *new_chunk = malloc(sizeof(struct chunk));
+		chunk_t new_chunk = chunk_allocate(l->initial_capacity, node_size);
 		if (new_chunk == NULL)
 			return NULL;
 
-		// Allocate a chunk that can hold at least initial_capacity nodes
-		size_t alloc_size = l->initial_capacity * node_size;
-			
-		new_chunk->size = alloc_size;
-		new_chunk->memory = malloc(alloc_size);
-		if (new_chunk->memory == NULL)
-		{
-			free(new_chunk);
-			return NULL;
-		}
-		new_chunk->used = 0;
 		new_chunk->next = l->chunks;
 		l->chunks = new_chunk;
 	}
-	struct doubly_linked_list_node *node = (struct doubly_linked_list_node *)(l->chunks->memory + l->chunks->used);
+	dllnode_t node = (dllnode_t)(l->chunks->memory + l->chunks->used);
 	l->chunks->used += node_size;
+
 	return node;
 }
