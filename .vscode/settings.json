@@ -6,5 +6,10 @@
                 "make": true,
                 "./build/unittest": true
         },
-        "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json"
+        "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json",
+        "cSpell.words": [
+                "bstnode",
+                "bstree",
+                "hmap"
+        ]
 }

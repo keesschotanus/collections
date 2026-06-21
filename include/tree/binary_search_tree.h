@@ -23,9 +23,6 @@
 #include "util/chunk.h"
 
 
-typedef struct binary_search_tree binary_search_tree;
-typedef struct binary_search_tree_node binary_search_tree_node;
-
 typedef struct binary_search_tree *bstree_t;
 typedef struct binary_search_tree_node *bstnode_t;
 
@@ -61,12 +58,31 @@ bstnode_t bstree_get_root(bstree_t bst);
 bool bstree_insert(bstree_t t, const void *element);
 
 /**
+ * @brief Visits all nodes, starting with the supplied node, in pre-order.
+ *
+ * @param bintree Pointer to the binary search tree.
+ * @param node The node to start from.
+ * @param visit Pointer to the visit function, called for each element.
+ */
+void bstree_visit_pre_order(bstree_t bst, bstnode_t node, void (*visit)(const void *));
+
+/**
  * @brief Visits all nodes, starting with the supplied node, in order.
  *
  * @param bintree Pointer to the binary search tree.
- * @param element Pointer to the node to start from .
+ * @param node The node to start from.
+ * @param visit Pointer to the visit function, called for each element.
  */
-void bstree_visit_in_order(bstree_t bst, bstnode_t node);
+void bstree_visit_in_order(bstree_t bst, bstnode_t node, void (*visit)(const void *));
+
+/**
+ * @brief Visits all nodes, starting with the supplied node, in post order.
+ *
+ * @param bintree Pointer to the binary search tree.
+ * @param node The node to start from.
+ * @param visit Pointer to the visit function, called for each element.
+ */
+void bstree_visit_post_order(bstree_t bst, bstnode_t node, void (*visit)(const void *));
 
 /**
  * @brief Frees the memory allocated for the binary search tree.

@@ -19,7 +19,7 @@
 
 struct binary_search_tree
 {
-	binary_search_tree_node *root;
+	bstnode_t root;
 	size_t element_size;
 	chunk_t chunks;
 	struct doubly_linked_list_node *free_list;
@@ -29,13 +29,14 @@ struct binary_search_tree
 
 struct binary_search_tree_node
 {
-	binary_search_tree_node *left;
-	binary_search_tree_node *right;
+	bstnode_t left;
+	bstnode_t right;
 	char data[]; // flexible array member (must be last)
 };
 
-static binary_search_tree_node *allocate_node(bstree_t bst);
-static void free_node(bstree_t bst, binary_search_tree_node *node);
+
+static bstnode_t allocate_node(bstree_t bst);
+static void free_node(bstree_t bst, bstnode_t node);
 
 bstree_t bstree_create(size_t initial_capacity, size_t element_size, int (*compare)(const void *, const void *))
 {
@@ -49,7 +50,7 @@ bstree_t bstree_create(size_t initial_capacity, size_t element_size, int (*compa
 		return NULL;
 	}
 
-	bst->chunks = chunk_allocate(initial_capacity, sizeof(binary_search_tree_node) + element_size);
+	bst->chunks = chunk_allocate(initial_capacity, sizeof(struct binary_search_tree_node) + element_size);
 	if (bst->chunks == NULL)
 	{
 		errno = ENOMEM;
@@ -69,7 +70,7 @@ bstnode_t bstree_get_root(bstree_t bst) {
 	return bst->root;
 }
 
-static binary_search_tree_node* bstree_insert_node(bstree_t bst, binary_search_tree_node *node, const void *element);
+static bstnode_t bstree_insert_node(bstree_t bst, bstnode_t node, const void *element);
 
 bool bstree_insert(bstree_t bst, const void *element)
 {
@@ -81,11 +82,28 @@ bool bstree_insert(bstree_t bst, const void *element)
 	return true;
 }
 
-void bstree_visit_in_order(bstree_t bst, bstnode_t node) {
+void bstree_visit_pre_order(bstree_t bst, bstnode_t node, void (*visit)(const void *)) {
     if (node != NULL) {
-        	bstree_visit_in_order(bst, node->left);
-        	printf("%d", *(int *)node->data);
-        	bstree_visit_in_order(bst, node->right);
+        	visit(node->data);
+        	bstree_visit_pre_order(bst, node->left, visit);
+        	bstree_visit_pre_order(bst, node->right, visit);
+    }
+}
+
+void bstree_visit_in_order(bstree_t bst, bstnode_t node, void (*visit)(const void *)) {
+    if (node != NULL) {
+        	bstree_visit_in_order(bst, node->left, visit);
+        	visit(node->data);
+        	bstree_visit_in_order(bst, node->right, visit);
+    }
+}
+
+
+void bstree_visit_post_order(bstree_t bst, bstnode_t node, void (*visit)(const void *)) {
+    if (node != NULL) {
+        	bstree_visit_post_order(bst, node->left, visit);
+        	bstree_visit_post_order(bst, node->right, visit);
+        	visit(node->data);
     }
 }
 
@@ -98,10 +116,10 @@ void bstree_free(bstree_t bst)
 	free(bst);
 }
 
-static binary_search_tree_node* bstree_insert_node(bstree_t bst, binary_search_tree_node *node, const void *element)
+static bstnode_t bstree_insert_node(bstree_t bst, bstnode_t node, const void *element)
 {
     	if (node == NULL) {
-		binary_search_tree_node *new_node = allocate_node(bst);
+		bstnode_t new_node = allocate_node(bst);
 		new_node->left = NULL;
 		new_node->right = NULL;
 		memcpy(new_node->data, element, bst->element_size);
@@ -119,25 +137,27 @@ static binary_search_tree_node* bstree_insert_node(bstree_t bst, binary_search_t
 }
 
 
-static binary_search_tree_node *allocate_node(bstree_t bst)
+static bstnode_t allocate_node(bstree_t bst)
 {
 	if (bst->free_list != NULL)
 	{
 		// reuse node from free list
 		// TODO
 	}
-    size_t node_size = sizeof(binary_search_tree_node) + bst->element_size;
+	size_t node_size = sizeof(struct binary_search_tree_node) + bst->element_size;
 	if (bst->chunks == NULL || bst->chunks->used + node_size > bst->chunks->size)
 	{
 		// allocate new chunk
 		chunk_t new_chunk = chunk_allocate(bst->initial_capacity, node_size);
-		if (new_chunk == NULL)
+		if (new_chunk == NULL) {
+			errno = ENOMEM;
 			return NULL;
+		}
 
 		new_chunk->next = bst->chunks;
 		bst->chunks = new_chunk;
 	}
-    binary_search_tree_node *node = (binary_search_tree_node *)(bst->chunks->memory + bst->chunks->used);
+	bstnode_t node = (bstnode_t)(bst->chunks->memory + bst->chunks->used);
 	bst->chunks->used += node_size;
 
 	return node;
