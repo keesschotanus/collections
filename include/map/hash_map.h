@@ -98,6 +98,14 @@ bool hash_map_put(hash_map_t hmap, const void *key, const void *value);
 bool hash_map_remove(hash_map_t hmap, const void *key);
 
 /**
+ * @brief Returns the number of elements currently in the map.
+ *
+ * @param l Pointer to the list.
+ * @return Number of elements in the list, or 0 if list is NULL.
+ */
+size_t hash_map_size(hash_map_t hmap);
+
+/**
  * @brief Frees the memory used by the hash map.
  *
  * @param hmap Pointer to the hash map to free. If NULL, does nothing.

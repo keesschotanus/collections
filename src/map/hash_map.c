@@ -92,6 +92,7 @@ bool hash_map_put(hash_map_t hmap, const void *key, const void *value) {
 	memcpy(entry.key, key, hmap->key_size);
 	memcpy(entry.value, value, hmap->value_size);
 
+	++hmap->number_of_elements;
 	return dllist_push(bucket, &entry);
 }
 
@@ -124,7 +125,15 @@ bool hash_map_remove(hash_map_t hmap, const void *key) {
 	if (node == NULL)
 		return false;
 
+	--hmap->number_of_elements;
 	return dllist_remove(bucket, node);
+}
+
+size_t hash_map_size(hash_map_t hmap) {
+	if (hmap)
+		return hmap->number_of_elements;
+
+	return -1;
 }
 
 void hash_map_free(hash_map_t hmap) {

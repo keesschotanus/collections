@@ -35,6 +35,8 @@ static void test_hash_map_int_to_int(void) {
         for (int i = 0; i < 100; i++) {
                 assert(hash_map_put(hmap, &i, &(int){i * 100}));
         }
+
+        assert(hash_map_size(hmap) == 100);
         for (int i = 0; i < 100; i++) {
                 int const *value = (int *)hash_map_get(hmap, &i);
                 assert(*value == i * 100);
@@ -42,6 +44,8 @@ static void test_hash_map_int_to_int(void) {
 
         hash_map_remove(hmap, &(int){1});
         assert(hash_map_get(hmap, &(int){1}) == NULL);
+        assert(hash_map_size(hmap) == 99);
+
 
         hash_map_free(hmap);
 }
