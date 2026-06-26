@@ -26,15 +26,11 @@
 
 struct hash_map
 {
-	void *bucket_list;
+	list_t bucket_list;
 	size_t bucket_list_size;
 	size_t number_of_elements;
 	size_t key_size;
 	size_t value_size;
-};
-
-struct bucket_list {
-	dllist_t list;
 };
 
 static dllist_t get_bucket(hash_map_t hmap, const void *key);
@@ -82,6 +78,10 @@ bool hash_map_put(hash_map_t hmap, const void *key, const void *value) {
 			return false;
 
 		list_set(hmap->bucket_list, bucket_index, &bucket);
+	} else {
+		// Check if the key is already present
+		if (hash_map_get(hmap, key) != NULL)
+			return false;
 	}
 
 	struct {
@@ -95,6 +95,8 @@ bool hash_map_put(hash_map_t hmap, const void *key, const void *value) {
 	return dllist_push(bucket, &entry);
 }
 
+// TODO hash_map_get() returns a pointer to the value inside the bucket node;
+// User code can hold pointers to internal storage.
 void *hash_map_get(hash_map_t hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
@@ -112,15 +114,15 @@ void *hash_map_get(hash_map_t hmap, const void *key) {
 
 bool hash_map_remove(hash_map_t hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
-		return NULL;
+		return false;
 
 	dllist_t bucket = get_bucket(hmap, key);
 	if (bucket == NULL)
-		return NULL;
+		return false;
 
 	dllnode_t node = get_node_from_bucket(hmap, bucket, key);
 	if (node == NULL)
-		return NULL;
+		return false;
 
 	return dllist_remove(bucket, node);
 }

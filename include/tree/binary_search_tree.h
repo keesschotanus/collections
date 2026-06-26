@@ -24,7 +24,7 @@
 
 
 typedef struct binary_search_tree *bstree_t;
-typedef struct binary_search_tree_node *bstnode_t;
+typedef struct binary_tree_node *btnode_t;
 
 
 /**
@@ -43,19 +43,19 @@ bstree_t bstree_create(size_t initial_capacity, size_t element_size, int (*compa
  * @brief Gets the root node of the supplied binary search tree.
  *
  * @param bstree Pointer to the binary search tree.
- * @return Root node of the supplied binary tree
+ * @return Root node of the supplied binary search tree
  *  NULL is returned when no elements have been added to the tree.
  */
-bstnode_t bstree_get_root(bstree_t bst);
+btnode_t bstree_get_root(bstree_t bst);
 
 /**
  * @brief Inserts an element into the binary search tree.
  *
- * @param bintree Pointer to the binary search tree.
+ * @param bst Pointer to the binary search tree.
  * @param element Pointer to the element to insert.
  * @return true if successful, false if allocation failed or tree is NULL.
  */
-bool bstree_insert(bstree_t t, const void *element);
+bool bstree_insert(bstree_t bst, const void *element);
 
 /**
  * @brief Visits all nodes, starting with the supplied node, in pre-order.
@@ -64,7 +64,7 @@ bool bstree_insert(bstree_t t, const void *element);
  * @param node The node to start from.
  * @param visit Pointer to the visit function, called for each element.
  */
-void bstree_visit_pre_order(bstree_t bst, bstnode_t node, void (*visit)(const void *));
+void bstree_visit_pre_order(bstree_t bst, btnode_t node, void (*visit)(const void *));
 
 /**
  * @brief Visits all nodes, starting with the supplied node, in order.
@@ -73,7 +73,7 @@ void bstree_visit_pre_order(bstree_t bst, bstnode_t node, void (*visit)(const vo
  * @param node The node to start from.
  * @param visit Pointer to the visit function, called for each element.
  */
-void bstree_visit_in_order(bstree_t bst, bstnode_t node, void (*visit)(const void *));
+void bstree_visit_in_order(bstree_t bst, btnode_t node, void (*visit)(const void *));
 
 /**
  * @brief Visits all nodes, starting with the supplied node, in post order.
@@ -82,7 +82,7 @@ void bstree_visit_in_order(bstree_t bst, bstnode_t node, void (*visit)(const voi
  * @param node The node to start from.
  * @param visit Pointer to the visit function, called for each element.
  */
-void bstree_visit_post_order(bstree_t bst, bstnode_t node, void (*visit)(const void *));
+void bstree_visit_post_order(bstree_t bst, btnode_t node, void (*visit)(const void *));
 
 /**
  * @brief Frees the memory allocated for the binary search tree.

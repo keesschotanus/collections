@@ -12,12 +12,18 @@
 #include <stdlib.h>
 
 #include "util/chunk.h"
+#include <errno.h>
 
 chunk_t chunk_allocate(size_t node_count, size_t node_size)
 {       
-	chunk_t new_chunk = malloc(sizeof *new_chunk);
-	if (new_chunk == NULL)
+	if (node_count == 0 || node_size == 0)
 		return NULL;
+
+	chunk_t new_chunk = malloc(sizeof *new_chunk);
+	if (new_chunk == NULL) {
+		errno = ENOMEM;
+		return NULL;
+	}
 
 	size_t alloc_size = node_count * node_size;
 	new_chunk->size = alloc_size;
@@ -25,28 +31,29 @@ chunk_t chunk_allocate(size_t node_count, size_t node_size)
 	if (new_chunk->memory == NULL)
 	{
 		free(new_chunk);
+		errno = ENOMEM;
 		return NULL;
 	}
 
-		new_chunk->used = 0;
-	    return new_chunk;
+	new_chunk->used = 0;
+	new_chunk->next = NULL;
+	return new_chunk;
 }
 
-	void chunk_free(chunk_t chunk)
-	{
-		if (chunk == NULL)
-			return;
+void chunk_free(chunk_t chunk)
+{
+	if (chunk == NULL)
+		return;
 
-		chunk_t current = chunk->next;
-		while (current != NULL)
-		{
-			chunk_t next = current->next;
-			free(current->memory);
-			free(current);
-			current = next;
-		}
-
-	    /* Free memory allocated for the head chunk */
-	    free(chunk->memory);
-	    free(chunk);
+	chunk_t current = chunk->next;
+	while (current != NULL) {
+		chunk_t next = current->next;
+		free(current->memory);
+		free(current);
+		current = next;
 	}
+
+    /* Free memory allocated for the head chunk */
+    free(chunk->memory);
+    free(chunk);
+}

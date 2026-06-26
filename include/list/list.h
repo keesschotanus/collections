@@ -18,7 +18,7 @@
  * int main(void)
  * {
  *         // Create a list of integers
- *         list int_list = list_create(10, sizeof(int));
+ *         list_t int_list = list_create(10, sizeof(int));
  *
  *         for (size_t i = 0; i < 20; i++)
  *                 list_append(int_list, &i);
