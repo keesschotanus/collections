@@ -14,6 +14,9 @@
  * @endcode
  */
 
+// TODO add example
+// TODO add search function
+
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 

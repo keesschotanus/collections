@@ -98,6 +98,12 @@ bool list_set(list_t l, size_t idx, const void *element);
 void list_visit(list_t l, void (*visit)(const void *));
 
 /**
+ * @brief Clears the list so it can be reused.
+ * @param l Pointer to the list to free.
+ */
+void list_clear(list_t l);
+
+/**
  * @brief Frees the memory allocated for the list.
  *
  * After calling this, the list pointer becomes invalid.

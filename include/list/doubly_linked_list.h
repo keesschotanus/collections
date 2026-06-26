@@ -202,4 +202,10 @@ const void* dllist_node_data(dllnode_t node);
  */
 void dllist_free(dllist_t l);
 
+/**
+ * @brief Gets the number of elements for the supplied list.
+ * @param l Pointer to the list to free.
+ */
+size_t dllist_size(dllist_t l);
+
 #endif

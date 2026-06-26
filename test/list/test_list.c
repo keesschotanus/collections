@@ -17,6 +17,7 @@ static void test_list_with_null_operations(void);
 static void test_list_with_out_of_bounds_values(void);
 static void test_double_list(void);
 static void test_list_visit(void);
+static void test_list_clear(void);
 static int compare_ints(const void *a, const void *b);
 
 int test_list(void)
@@ -30,6 +31,8 @@ int test_list(void)
 	test_double_list();
 
 	test_list_visit();
+
+	test_list_clear();
 
 	printf("All list tests passed!\n");
 	return 0;
@@ -170,6 +173,21 @@ static void test_list_visit(void)
 	assert(visited_sum == 2.25 + 4.50 + 6.25 + 8.0);
 
 	list_free(double_list);
+}
+
+static void test_list_clear(void)
+{
+	list_t int_list = list_create(10, sizeof(int));
+	list_append(int_list, &(int){2});
+	list_append(int_list, &(int){4});
+	assert(list_size(int_list) == 2);
+
+	list_clear(int_list);
+	assert(list_size(int_list) == 0);
+	list_append(int_list, &(int){3});
+	assert(list_size(int_list) == 1);
+
+	list_free(int_list);
 }
 
 static int compare_ints(const void *a, const void *b)

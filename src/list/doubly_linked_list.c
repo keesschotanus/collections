@@ -246,7 +246,6 @@ const void *dllist_node_data(dllnode_t node)
 	return node->data;
 }
 
-
 void dllist_free(dllist_t l)
 {
 	if (l == NULL)

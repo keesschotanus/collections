@@ -84,7 +84,8 @@ void *hash_map_get(hash_map_t hmap, const void *key);
  * @param hmap Pointer to the hash map.
  * @param key Pointer to the key to insert/update. Must not be NULL.
  * @param value Pointer to the value to associate with the key. Must not be NULL.
- * @return true if successful, false if allocation failed or hmap/key/value is NULL.
+ * @return true if successful, otherwise false.
+ *  Inserting an existing key causes false to be returned.
  */
 bool hash_map_put(hash_map_t hmap, const void *key, const void *value);
 

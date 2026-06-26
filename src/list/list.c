@@ -103,6 +103,13 @@ void list_visit(list_t l, void (*visit)(const void *))
 	}
 }
 
+void list_clear(list_t l)
+{
+	if (l != NULL) {
+		l->number_of_elements = 0;
+	}
+}
+
 void list_free(list_t l)
 {
 	if (l == NULL)
