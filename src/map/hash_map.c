@@ -130,10 +130,7 @@ bool hash_map_remove(hash_map_t hmap, const void *key) {
 }
 
 size_t hash_map_size(hash_map_t hmap) {
-	if (hmap)
-		return hmap->number_of_elements;
-
-	return -1;
+	return hmap ? hmap->number_of_elements : 0;
 }
 
 void hash_map_free(hash_map_t hmap) {

@@ -52,6 +52,7 @@ struct doubly_linked_list_node
 struct doubly_linked_list
 {
 	dllnode_t head; // Dummy head node for circular list
+	size_t number_of_elements;
 	size_t element_size;
 	chunk_t chunks;
 	dllnode_t free_list;
@@ -73,6 +74,7 @@ dllist_t dllist_create(size_t initial_capacity, size_t element_size)
 		return NULL;
 	}
 	
+	l->number_of_elements = 0;
 	l->element_size = element_size;
 	l->chunks = NULL;
 	l->free_list = NULL;
@@ -112,6 +114,7 @@ bool dllist_insert_before(dllist_t l, dllnode_t node, const void *element)
 	node->prev->next = new_node;
 	node->prev = new_node;
 
+	++l->number_of_elements;
 	return true;
 }
 
@@ -136,6 +139,7 @@ bool dllist_insert_after(dllist_t l, dllnode_t node, const void *element)
 	node->next->prev = new_node;
 	node->next = new_node;
 
+	++l->number_of_elements;
 	return true;
 }
 
@@ -200,6 +204,7 @@ bool dllist_remove(dllist_t l, dllnode_t node)
 	node->next->prev = node->prev;
 	free_node(l, node);
 
+	--l->number_of_elements;
 	return true;
 }
 
@@ -249,6 +254,12 @@ void dllist_free(dllist_t l)
 	chunk_free(l->chunks);
 	free(l);
 }
+
+size_t dllist_size(dllist_t l)
+{
+	return l ? l->number_of_elements : 0;
+}
+
 
 static void free_node(dllist_t l, dllnode_t node)
 {

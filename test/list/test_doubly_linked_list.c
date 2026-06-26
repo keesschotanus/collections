@@ -133,6 +133,7 @@ static void test_list_remove(void)
 {
 	dllist_t int_list = create_list_with_elements_2_4_6_8();
 
+	assert(dllist_size(int_list) == 4);
 	int remove_elements[] = {6 ,2, 4, 8};
 	for (size_t i = 0; i < sizeof(remove_elements) / sizeof(remove_elements[0]); i++)
 	{
@@ -146,6 +147,8 @@ static void test_list_remove(void)
 
 	// Remove from an empty list
 	assert(dllist_remove(int_list, NULL) == false);
+
+	assert(dllist_size(int_list) == 0);
 
 	dllist_free(int_list);
 }
