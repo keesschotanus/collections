@@ -20,6 +20,7 @@ struct person {
 static void test_hash_map_int_to_int(void);
 static void test_hash_map_int_to_struct(void);
 
+
 void test_hash_map(void)
 {
        	printf("Test hash map...");
@@ -37,6 +38,10 @@ static void test_hash_map_int_to_int(void) {
         for (int i = 0; i < 100; i++) {
                 assert(hash_map_put(hmap, &i, &(int){i * 100}));
         }
+
+        // Check you can't insert the same value twice
+        int key = 1;
+        assert(hash_map_put(hmap, &key, &key) == false);
 
         assert(hash_map_size(hmap) == 100);
         for (int i = 0; i < 100; i++) {
