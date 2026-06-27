@@ -10,7 +10,7 @@
 
 #include "list/doubly_linked_list.h"
 
-static void test_list(void);
+static void test_list_with_integers(void);
 static void test_list_find(void);
 static void test_list_insert(void);
 static void test_list_push_and_pop_and_peek(void);
@@ -23,18 +23,20 @@ static void verify_list_contents(dllist_t l, const int *expected_values, size_t 
 
 int test_doubly_linked_list(void)
 {
-	test_list();
+	printf("Test doubly linked list...");
+
+	test_list_with_integers();
 	test_list_find();
 	test_list_insert();
 	test_list_push_and_pop_and_peek();
 	test_list_visit();
 	test_list_remove();
 
-	printf("All doubly_linked_list tests passed!\n");
+	puts(" ✅");
 	return 0;
 }
 
-static void test_list(void)
+static void test_list_with_integers(void)
 {
 	dllist_t int_list = create_list_with_elements_2_4_6_8();
 	int expected_values[] = {2, 4, 6, 8};

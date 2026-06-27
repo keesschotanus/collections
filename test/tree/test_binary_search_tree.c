@@ -17,9 +17,11 @@ static void visit_int(const void *data);
 
 int test_binary_search_tree(void)
 {
+	printf("Test binary search tree...");
+
 	test_int_binary_search_tree();
 
-	printf("All binary search tree tests passed!\n");
+	puts(" ✅");
 	return 0;
 }
 

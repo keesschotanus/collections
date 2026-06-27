@@ -6,11 +6,11 @@ PREFIX ?= /usr/local
 DESTDIR ?=
 
 # Flags
-CPPFLAGS += -Iinclude
+CPPFLAGS += -Iinclude -fsanitize=address
 CFLAGS = -std=c2x -Wall -Wextra
 DEPFLAGS = -MMD -MP
 PICFLAGS = -fPIC
-LDFLAGS =
+LDFLAGS += -fsanitize=address
 AR = ar
 ARFLAGS = rcs
 

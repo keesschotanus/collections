@@ -10,35 +10,37 @@
 
 #include "list/list.h"
 
-static void test_int_list(void);
+static void test_list_of_integers(void);
+static void test_list_of_doubles(void);
 static void test_list_with_invalid_element_size(void);
 static void test_list_with_zero_capacity(void);
 static void test_list_with_null_operations(void);
 static void test_list_with_out_of_bounds_values(void);
-static void test_double_list(void);
 static void test_list_visit(void);
 static void test_list_clear(void);
 static int compare_ints(const void *a, const void *b);
 
 int test_list(void)
 {
-	test_int_list();
+	printf("Test list (dynamic array)...");
+
+	test_list_of_integers();
+	test_list_of_doubles();
+
 	test_list_with_invalid_element_size();
 	test_list_with_zero_capacity();
 	test_list_with_null_operations();
 	test_list_with_out_of_bounds_values();
 
-	test_double_list();
-
 	test_list_visit();
 
 	test_list_clear();
 
-	printf("All list tests passed!\n");
+	puts(" ✅");
 	return 0;
 }
 
-static void test_int_list(void)
+static void test_list_of_integers(void)
 {
 	list_t int_list = list_create(10, sizeof(int));
 	assert(int_list != NULL);
@@ -83,55 +85,7 @@ static void test_int_list(void)
 	list_free(unsorted);
 }
 
-static void test_list_with_invalid_element_size(void)
-{
-	list_t invalid = list_create(10, 0);
-	assert(invalid == NULL);
-}
-
-static void test_list_with_zero_capacity(void)
-{
-	list_t l = list_create(0, sizeof(int));
-	assert(l != NULL);
-	assert(list_size(l) == 0);
-
-	int val = 42;
-	list_append(l, &val);
-	assert(list_size(l) == 1);
-	int *retrieved = (int *)list_get(l, 0);
-	assert(retrieved != NULL);
-	assert(*retrieved == 42);
-
-	list_free(l);
-}
-
-static void test_list_with_null_operations(void)
-{
-	// Test NULL list operations
-	list_append(NULL, NULL);
-	assert(list_get(NULL, 0) == NULL);
-	assert(list_set(NULL, 0, NULL) == false);
-	assert(list_size(NULL) == 0);
-	list_free(NULL);
-}
-
-void test_list_with_out_of_bounds_values(void)
-{
-	// Test out of bounds
-	list_t l = list_create(5, sizeof(int));
-	assert(l != NULL);
-	assert(list_get(l, 0) == NULL); // empty list
-	assert(list_set(l, 0, NULL) == false);
-
-	int val = 42;
-	list_append(l, &val);
-	assert(list_get(l, 1) == NULL); // out of bounds
-	assert(list_set(l, 1, &val) == false);
-
-	list_free(l);
-}
-
-static void test_double_list(void)
+static void test_list_of_doubles(void)
 {
 	list_t double_list = list_create(10, sizeof(double));
 	assert(double_list != NULL);
@@ -148,12 +102,60 @@ static void test_double_list(void)
 
 	for (size_t i = 0; i < number_of_elements; ++i)
 	{
-		double *val = (double *)list_get(double_list, i);
+		double const *val = (double *)list_get(double_list, i);
 		assert(val != NULL);
 		assert(*val == i * 1.1);
 	}
 
 	list_free(double_list);
+}
+
+static void test_list_with_invalid_element_size(void)
+{
+	list_t invalid = list_create(10, 0);
+	assert(invalid == NULL);
+}
+
+static void test_list_with_zero_capacity(void)
+{
+	list_t l = list_create(0, sizeof(int));
+	assert(l != NULL);
+	assert(list_size(l) == 0);
+
+	int val = 42;
+	list_append(l, &val);
+	assert(list_size(l) == 1);
+	int const *retrieved = (int *)list_get(l, 0);
+	assert(retrieved != NULL);
+	assert(*retrieved == 42);
+
+	list_free(l);
+}
+
+static void test_list_with_null_operations(void)
+{
+	// Test NULL list operations
+	list_append(NULL, NULL);
+	assert(list_get(NULL, 0) == NULL);
+	assert(list_set(NULL, 0, NULL) == false);
+	assert(list_size(NULL) == 0);
+	list_free(NULL);
+}
+
+static void test_list_with_out_of_bounds_values(void)
+{
+	// Test out of bounds
+	list_t l = list_create(5, sizeof(int));
+	assert(l != NULL);
+	assert(list_get(l, 0) == NULL); // empty list
+	assert(list_set(l, 0, NULL) == false);
+
+	int val = 42;
+	list_append(l, &val);
+	assert(list_get(l, 1) == NULL); // out of bounds
+	assert(list_set(l, 1, &val) == false);
+
+	list_free(l);
 }
 
 static double visited_sum = 0;

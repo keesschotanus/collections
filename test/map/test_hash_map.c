@@ -22,10 +22,12 @@ static void test_hash_map_int_to_struct(void);
 
 void test_hash_map(void)
 {
+       	printf("Test hash map...");
+
         test_hash_map_int_to_int();
         test_hash_map_int_to_struct();
 
-       	printf("All hash_map tests passed!\n");
+	puts(" ✅");
 }
 
 static void test_hash_map_int_to_int(void) {

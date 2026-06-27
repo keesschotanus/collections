@@ -17,9 +17,11 @@ static void visit_struct(const void *data);
 
 int test_binary_tree(void)
 {
+	printf("Test binary tree...");
+
 	test_struct_binary_tree();
 
-	printf("All binary tree tests passed!\n");
+	puts(" ✅");
 	return 0;
 }
 
