@@ -20,6 +20,7 @@
 struct binary_tree
 {
 	btnode_t root;
+	size_t number_of_elements;
 	size_t element_size;
 	chunk_t chunks;
 	size_t initial_capacity;
@@ -55,6 +56,7 @@ bintree_t bintree_create(size_t initial_capacity, size_t element_size)
 		return NULL;
 	}
 
+	bintree->number_of_elements = 0;
 	bintree->initial_capacity = initial_capacity;
 	bintree->element_size = element_size;
 	bintree->root = NULL;
@@ -70,6 +72,7 @@ btnode_t bintree_create_root(bintree_t bintree, const void *element)
 	bintree->root = allocate_node(bintree);
 	if (bintree->root != NULL) {
 		memcpy(bintree->root->data, element, bintree->element_size);
+		++bintree->number_of_elements;
 	}
 
 
@@ -88,6 +91,7 @@ btnode_t bintree_insert_left(bintree_t bintree, btnode_t node, const void *eleme
 
 	btnode_t new_node = allocate_node(bintree);
 	if (new_node != NULL) {
+		++bintree->number_of_elements;
 		node->left = new_node;
 		memcpy(new_node->data, element, bintree->element_size);
 	}
@@ -103,10 +107,10 @@ btnode_t bintree_insert_right(bintree_t bintree, btnode_t node, const void *elem
 
 	btnode_t new_node = allocate_node(bintree);
 	if (new_node != NULL) {
+		++bintree->number_of_elements;
 		node->right = new_node;
 		memcpy(new_node->data, element, bintree->element_size);
 	}
-
 
 	return new_node;
 }
@@ -136,6 +140,10 @@ void bintree_visit_post_order(bintree_t bintree, btnode_t node, void (*visit)(co
         	bintree_visit_post_order(bintree, node->right, visit);
         	visit(node->data);
 	}
+}
+
+size_t bintree_size(bintree_t bintree) {
+	return bintree->number_of_elements;
 }
 
 void bintree_free(bintree_t bintree)

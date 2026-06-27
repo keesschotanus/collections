@@ -137,6 +137,14 @@ void bintree_visit_in_order(bintree_t bintree, btnode_t node, void (*visit)(cons
 void bintree_visit_post_order(bintree_t bintree, btnode_t node, void (*visit)(const void *));
 
 /**
+ * @brief Get the number of nodes in the tree.
+ * 
+ * @param bintree The tree to get the size of.
+ * @return size_t The number of nodes in the tree.
+ */
+size_t bintree_size(bintree_t bintree);
+
+/**
  * @brief Frees the memory allocated for the binary tree.
  *
  * @param bintree Pointer to the binary tree to free.

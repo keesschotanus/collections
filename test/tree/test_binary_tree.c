@@ -11,15 +11,15 @@
 
 #include "tree/binary_tree.h"
 
-static void test_struct_binary_tree(void);
+static void test_binary_tree_of_structs(void);
 
-static void visit_struct(const void *data);
+static void visit_binary_tree_of_structs(const void *data);
 
 int test_binary_tree(void)
 {
 	printf("Test binary tree...");
 
-	test_struct_binary_tree();
+	test_binary_tree_of_structs();
 
 	puts(" ✅");
 	return 0;
@@ -32,7 +32,7 @@ struct token {
 
 static char result[10] = {};
 
-static void test_struct_binary_tree()
+static void test_binary_tree_of_structs()
 {
 	struct token plus = {.type = 'o', .value = '+'};
 	struct token one = {.type = 'l', .value = '1'};
@@ -44,9 +44,11 @@ static void test_struct_binary_tree()
 	bintree_insert_left(bintree, root, &one);
 	bintree_insert_right(bintree, root, &two);
 
-	bintree_visit_pre_order(bintree, bintree_get_root(bintree), visit_struct);
-	bintree_visit_in_order(bintree, bintree_get_root(bintree), visit_struct);
-	bintree_visit_post_order(bintree, bintree_get_root(bintree), visit_struct);
+	bintree_visit_pre_order(bintree, bintree_get_root(bintree), visit_binary_tree_of_structs);
+	bintree_visit_in_order(bintree, bintree_get_root(bintree), visit_binary_tree_of_structs);
+	bintree_visit_post_order(bintree, bintree_get_root(bintree), visit_binary_tree_of_structs);
+
+	assert(bintree_size(bintree) == 3);
 
 	bintree_free(bintree);
 
@@ -55,7 +57,7 @@ static void test_struct_binary_tree()
 
 static size_t result_idx = 0;
 
-static void visit_struct(const void *data)
+static void visit_binary_tree_of_structs(const void *data)
 {
 	struct token token = *(const struct token*)data;
 	result[result_idx++] = token.value;

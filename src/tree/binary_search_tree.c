@@ -13,15 +13,9 @@
 
 #include "tree/binary_search_tree.h"
 
-#define INITIAL_CAPACITY 32
-
-
 struct binary_search_tree
 {
-	btnode_t root;
-	size_t element_size;
-	chunk_t chunks;
-	size_t initial_capacity;
+	bintree_t tree;
 	int (*compare)(const void *, const void *);
 };
 
@@ -32,130 +26,131 @@ struct binary_tree_node
 	char data[]; // flexible array member (must be last)
 };
 
-
-static btnode_t allocate_node(bstree_t bst);
+static bool bstree_insert_node(bstree_t bst, btnode_t node, const void *element);
 
 bstree_t bstree_create(size_t initial_capacity, size_t element_size, int (*compare)(const void *, const void *))
 {
 	if (element_size == 0 || compare == NULL)
 		return NULL;
 
-	struct binary_search_tree *bst = malloc(sizeof (struct binary_search_tree));
-	if (bst == NULL) 
+	struct binary_search_tree *bst = malloc(sizeof(struct binary_search_tree));
+	if (bst == NULL)
 	{
 		errno = ENOMEM;
 		return NULL;
 	}
 
-	bst->chunks = chunk_allocate(initial_capacity, sizeof(struct binary_tree_node) + element_size);
-	if (bst->chunks == NULL)
+	bst->tree = bintree_create(initial_capacity, element_size);
+	if (bst->tree == NULL)
 	{
-		errno = ENOMEM;
 		free(bst);
 		return NULL;
 	}
 
 	bst->compare = compare;
-	bst->initial_capacity = initial_capacity;
-	bst->element_size = element_size;
-	bst->root = NULL;
-
 	return bst;
 }
 
-btnode_t bstree_get_root(bstree_t bst) {
-	return bst->root;
-}
+btnode_t bstree_get_root(bstree_t bst)
+{
+	if (bst == NULL)
+		return NULL;
 
-static btnode_t bstree_insert_node(bstree_t bst, btnode_t node, const void *element);
+	return bintree_get_root(bst->tree);
+}
 
 bool bstree_insert(bstree_t bst, const void *element)
 {
 	if (bst == NULL || element == NULL)
 		return false;
 
-	bst->root = bstree_insert_node(bst, bst->root, element);
-		
-	return true;
+	btnode_t root = bintree_get_root(bst->tree);
+	if (root == NULL)
+		return bintree_create_root(bst->tree, element) != NULL;
+
+	return bstree_insert_node(bst, root, element);
 }
 
-void bstree_visit_pre_order(bstree_t bst, btnode_t node, void (*visit)(const void *)) {
-    if (node != NULL) {
-        	visit(node->data);
-        	bstree_visit_pre_order(bst, node->left, visit);
-        	bstree_visit_pre_order(bst, node->right, visit);
-    }
+bool bstree_search(bstree_t bst, const void *element)
+{
+	if (bst == NULL || element == NULL)
+		return false;
+
+	btnode_t node = bintree_get_root(bst->tree);
+	while (node != NULL)
+	{
+		int cmp_result = bst->compare(element, node->data);
+		if (cmp_result < 0)
+			node = node->left;
+		else if (cmp_result > 0)
+			node = node->right;
+		else
+			return true;
+	}
+
+	return false;
 }
 
-void bstree_visit_in_order(bstree_t bst, btnode_t node, void (*visit)(const void *)) {
-    if (node != NULL) {
-        	bstree_visit_in_order(bst, node->left, visit);
-        	visit(node->data);
-        	bstree_visit_in_order(bst, node->right, visit);
-    }
+void bstree_visit_pre_order(bstree_t bst, btnode_t node, void (*visit)(const void *))
+{
+	if (bst == NULL || visit == NULL)
+		return;
+
+	bintree_visit_pre_order(bst->tree, node, visit);
 }
 
+void bstree_visit_in_order(bstree_t bst, btnode_t node, void (*visit)(const void *))
+{
+	if (bst == NULL || visit == NULL)
+		return;
 
-void bstree_visit_post_order(bstree_t bst, btnode_t node, void (*visit)(const void *)) {
-    if (node != NULL) {
-        	bstree_visit_post_order(bst, node->left, visit);
-        	bstree_visit_post_order(bst, node->right, visit);
-        	visit(node->data);
-    }
+	bintree_visit_in_order(bst->tree, node, visit);
 }
+
+void bstree_visit_post_order(bstree_t bst, btnode_t node, void (*visit)(const void *))
+{
+	if (bst == NULL || visit == NULL)
+		return;
+
+	bintree_visit_post_order(bst->tree, node, visit);
+}
+
+size_t bstree_size(bstree_t bst) {
+	return bintree_size(bst->tree);
+}
+
 
 void bstree_free(bstree_t bst)
 {
 	if (bst == NULL)
 		return;
 
-	chunk_free(bst->chunks);
+	bintree_free(bst->tree);
 	free(bst);
 }
 
-static btnode_t bstree_insert_node(bstree_t bst, btnode_t node, const void *element)
+static bool bstree_insert_node(bstree_t bst, btnode_t node, const void *element)
 {
-    	if (node == NULL) {
-		btnode_t new_node = allocate_node(bst);
-		if (new_node == NULL) {
-			errno = ENOMEM;
-			return NULL;
-		}
-		new_node->left = NULL;
-		new_node->right = NULL;
-		memcpy(new_node->data, element, bst->element_size);
-        	return new_node;
-    	}
-
-    	int cmp_result = bst->compare(element, node->data);
+	int cmp_result = bst->compare(element, node->data);
 	if (cmp_result < 0)
-		node->left = bstree_insert_node(bst, node->left, element);
-	else if (cmp_result > 0)
-		node->right = bstree_insert_node(bst, node->right, element);
-	else return node;
-
-	return node;
-}
-
-static btnode_t allocate_node(bstree_t bst)
-{
-	size_t node_size = sizeof(struct binary_tree_node) + bst->element_size;
-	if (bst->chunks == NULL || bst->chunks->used + node_size > bst->chunks->size)
 	{
-		// allocate new chunk
-		chunk_t new_chunk = chunk_allocate(bst->initial_capacity, node_size);
-		if (new_chunk == NULL) {
-			errno = ENOMEM;
-			return NULL;
-		}
+		if (node->left != NULL)
+			return bstree_insert_node(bst, node->left, element);
 
-		new_chunk->next = bst->chunks;
-		bst->chunks = new_chunk;
+		btnode_t new_node = bintree_insert_left(bst->tree, node, element);
+		return new_node != NULL;
 	}
-	btnode_t node = (btnode_t)(bst->chunks->memory + bst->chunks->used);
-	bst->chunks->used += node_size;
+	if (cmp_result > 0)
+	{
+		if (node->right != NULL)
+			return bstree_insert_node(bst, node->right, element);
 
-	return node;
+		btnode_t new_node = bintree_insert_right(bst->tree, node, element);
+		return new_node != NULL;
+	}
+
+	// Duplicate element - reject it
+	return false;
 }
 
 

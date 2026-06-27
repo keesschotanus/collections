@@ -15,7 +15,6 @@
  */
 
 // TODO add example
-// TODO add search function
 
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
@@ -23,11 +22,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "util/chunk.h"
+#include "tree/binary_tree.h"
 
 
 typedef struct binary_search_tree *bstree_t;
-typedef struct binary_tree_node *btnode_t;
 
 
 /**
@@ -45,7 +43,7 @@ bstree_t bstree_create(size_t initial_capacity, size_t element_size, int (*compa
 /**
  * @brief Gets the root node of the supplied binary search tree.
  *
- * @param bstree Pointer to the binary search tree.
+ * @param bst Pointer to the binary search tree.
  * @return Root node of the supplied binary search tree
  *  NULL is returned when no elements have been added to the tree.
  */
@@ -61,9 +59,18 @@ btnode_t bstree_get_root(bstree_t bst);
 bool bstree_insert(bstree_t bst, const void *element);
 
 /**
+ * @brief Searches the binary search tree for an element.
+ *
+ * @param bst Pointer to the binary search tree.
+ * @param element Pointer to the element to search for.
+ * @return true if the element is present, false otherwise.
+ */
+bool bstree_search(bstree_t bst, const void *element);
+
+/**
  * @brief Visits all nodes, starting with the supplied node, in pre-order.
  *
- * @param bintree Pointer to the binary search tree.
+ * @param bst Pointer to the binary search tree.
  * @param node The node to start from.
  * @param visit Pointer to the visit function, called for each element.
  */
@@ -72,7 +79,7 @@ void bstree_visit_pre_order(bstree_t bst, btnode_t node, void (*visit)(const voi
 /**
  * @brief Visits all nodes, starting with the supplied node, in order.
  *
- * @param bintree Pointer to the binary search tree.
+ * @param bst Pointer to the binary search tree.
  * @param node The node to start from.
  * @param visit Pointer to the visit function, called for each element.
  */
@@ -81,11 +88,19 @@ void bstree_visit_in_order(bstree_t bst, btnode_t node, void (*visit)(const void
 /**
  * @brief Visits all nodes, starting with the supplied node, in post order.
  *
- * @param bintree Pointer to the binary search tree.
+ * @param bst Pointer to the binary search tree.
  * @param node The node to start from.
  * @param visit Pointer to the visit function, called for each element.
  */
 void bstree_visit_post_order(bstree_t bst, btnode_t node, void (*visit)(const void *));
+
+/**
+ * @brief Get the number of nodes in the tree.
+ * 
+ * @param bst The tree to get the size of.
+ * @return size_t The number of nodes in the tree.
+ */
+size_t bstree_size(bstree_t bst);
 
 /**
  * @brief Frees the memory allocated for the binary search tree.
