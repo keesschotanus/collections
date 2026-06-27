@@ -110,6 +110,14 @@ btnode_t bintree_insert_left(bintree_t bintree, btnode_t node, const void *eleme
 btnode_t bintree_insert_right(bintree_t bintree, btnode_t node, const void *element);
 
 /**
+ * @brief Gets the data from the supplied node.
+ *
+ * @param node The node to get the data from.
+ * @return Pointer to the data, or NULL if node is NULL.
+ */
+const void* bintree_get_node_data(btnode_t node);
+
+/**
  * @brief Visits all nodes, starting with the supplied node, in pre-order.
  *
  * @param bintree Pointer to the binary tree.

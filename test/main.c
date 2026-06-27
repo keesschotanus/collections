@@ -11,11 +11,11 @@ void test_binary_search_tree(void);
 int main(void)
 {
 	test_chunk();
+	test_hash_map();
+
 	test_list();
 	test_doubly_linked_list();
 	
-	test_hash_map();
-
 	test_binary_tree();
 	test_binary_search_tree();
 	

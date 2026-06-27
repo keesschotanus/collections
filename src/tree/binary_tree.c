@@ -115,6 +115,12 @@ btnode_t bintree_insert_right(bintree_t bintree, btnode_t node, const void *elem
 	return new_node;
 }
 
+const void* bintree_get_node_data(btnode_t node)
+{
+	if (node == NULL)
+		return NULL;
+	return node->data;
+}
 
 void bintree_visit_pre_order(bintree_t bintree, btnode_t node, void (*visit)(const void *))
 {

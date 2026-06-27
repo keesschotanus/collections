@@ -63,9 +63,18 @@ bool bstree_insert(bstree_t bst, const void *element);
  *
  * @param bst Pointer to the binary search tree.
  * @param element Pointer to the element to search for.
- * @return true if the element is present, false otherwise.
+ * @return Pointer to the found node or NULL if the node was not found.
+ *  Note: NULL is also returned when a NULL tree or element pointer is supplied.
  */
-bool bstree_search(bstree_t bst, const void *element);
+btnode_t bstree_search(bstree_t bst, const void *element);
+
+/**
+ * @brief Gets the data from the supplied node.
+ *
+ * @param node The node to get the data from.
+ * @return Pointer to the data, or NULL if node is NULL.
+ */
+const void* bstree_get_node_data(btnode_t node);
 
 /**
  * @brief Visits all nodes, starting with the supplied node, in pre-order.

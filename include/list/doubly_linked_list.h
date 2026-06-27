@@ -191,7 +191,7 @@ void dllist_visit(dllist_t l, void (*visit)(const void *));
  * @param node The node to get the data from.
  * @return Pointer to the data, or NULL if node is NULL.
  */
-const void* dllist_node_data(dllnode_t node);
+const void* dllist_get_node_data(dllnode_t node);
 
 /**
  * @brief Frees the memory allocated for the list.

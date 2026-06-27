@@ -35,7 +35,9 @@ static void test_binary_search_tree_of_ints(void)
 	bstree_visit_in_order(bst, bstree_get_root(bst), visit_int);
 
 	int existing = 4;
-	assert(bstree_search(bst, &existing) == true);
+	btnode_t existing_node = bstree_search(bst, &existing);
+	assert(existing_node != NULL);
+	assert(*(int *)bstree_get_node_data(existing_node) == 4);
 
 	// Try to add existing data 
 	assert(bstree_size(bst) == 5);
@@ -43,7 +45,7 @@ static void test_binary_search_tree_of_ints(void)
 	assert(bstree_size(bst) == 5);
 
 	int missing = 99;
-	assert(bstree_search(bst, &missing) == false);
+	assert(bstree_search(bst, &missing) == NULL);
 	assert(bstree_insert(bst, &missing) == true);
 	assert(bstree_size(bst) == 6);
 

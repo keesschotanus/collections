@@ -239,7 +239,7 @@ void dllist_visit(dllist_t l, void (*visit)(const void *))
 	}
 }
 
-const void *dllist_node_data(dllnode_t node)
+const void *dllist_get_node_data(dllnode_t node)
 {
 	if (node == NULL)
 		return NULL;

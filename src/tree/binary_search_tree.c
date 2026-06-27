@@ -71,10 +71,10 @@ bool bstree_insert(bstree_t bst, const void *element)
 	return bstree_insert_node(bst, root, element);
 }
 
-bool bstree_search(bstree_t bst, const void *element)
+btnode_t bstree_search(bstree_t bst, const void *element)
 {
 	if (bst == NULL || element == NULL)
-		return false;
+		return NULL;
 
 	btnode_t node = bintree_get_root(bst->tree);
 	while (node != NULL)
@@ -85,10 +85,17 @@ bool bstree_search(bstree_t bst, const void *element)
 		else if (cmp_result > 0)
 			node = node->right;
 		else
-			return true;
+			return node;
 	}
 
-	return false;
+	return NULL;
+}
+
+const void* bstree_get_node_data(btnode_t node)
+{
+	if (node == NULL)
+		return NULL;
+	return node->data;
 }
 
 void bstree_visit_pre_order(bstree_t bst, btnode_t node, void (*visit)(const void *))

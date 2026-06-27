@@ -52,7 +52,7 @@ static void test_list_find(void)
 	{
 		dllnode_t node = dllist_find(int_list, &i, compare_ints);
 		assert(node != NULL);
-		const void* data = dllist_node_data(node);
+		const void* data = dllist_get_node_data(node);
 		assert(*(int *)data == i);
 	}
 
@@ -180,7 +180,7 @@ static void verify_list_contents(dllist_t l, const int *expected_values, size_t 
 	size_t idx = 0;
 	while (node != NULL)
 	{
-		const void* data = dllist_node_data(node);
+		const void* data = dllist_get_node_data(node);
 		assert(data != NULL);
 		assert(*(int *)data == expected_values[idx]);
 		node = dllist_next(l, node);

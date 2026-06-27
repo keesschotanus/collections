@@ -109,7 +109,7 @@ void *hash_map_get(hash_map_t hmap, const void *key) {
 	if (node == NULL)
 		return NULL;
 
-	return (char *)dllist_node_data(node) + hmap->key_size;
+	return (char *)dllist_get_node_data(node) + hmap->key_size;
 }
 
 bool hash_map_remove(hash_map_t hmap, const void *key) {
@@ -160,7 +160,7 @@ static dllist_t get_bucket(hash_map_t hmap, const void *key) {
 static dllnode_t get_node_from_bucket(hash_map_t hmap, dllist_t bucket, const void *key) {
 	dllnode_t node = dllist_first(bucket);
 	while (node != NULL) {
-		const void *entry = dllist_node_data(node);
+		const void *entry = dllist_get_node_data(node);
 		// Compare only the key part of the entry
 		if (memcmp(entry, key, hmap->key_size) == 0) {
 			return node;
