@@ -16,10 +16,13 @@ but why use a standard library in minutes when you can experience the agony of w
 ## Current implementations
 
 - Lists
-	- [list](include/list.h) (a simple dynamic list)
-	- [doubly linked list](include/doubly_linked_list.h)
+	- [list](include/list/list.h) (a simple dynamic list)
+	- [doubly linked list](include/list/doubly_linked_list.h)
 - Maps
-	- [hash map](include/hash_map.h)
+	- [hash map](include/map/hash_map.h)
+- Trees
+	- [binary tree](include/tree/binary_tree.h)
+	- [binary search tree](include/tree/binary_search_tree.h)
 
 ## Using the Makefile
 
