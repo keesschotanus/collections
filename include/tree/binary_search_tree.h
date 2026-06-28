@@ -6,15 +6,58 @@
  * The tree can be traversed in various ways, such as in-order, pre-order, and post-order.
  * Elements can be inserted and searched for in the tree.
  * 
+ * Note: You currently can't remove nodes from the tree.
+ * Note: The tree is not balanced in any way so adding ordered elements,
+ * causes performance to drop to that of a linked list.
+
  * Don't forget to free the tree with bstree_free() when you're done to avoid memory leaks.
  * 
  * @see binary_search_tree.c for implementation details.
  * @example
  * @code
+ * #include <stdio.h>
+ *
+ * #include "tree/binary_search_tree.h"
+ * 
+ * static int compare_ints(const void *left, const void *right);
+ * static void visit_int(const void *data);
+ * 
+ * int main(void)
+ * {
+ * 	bstree_t bst = bstree_create(10, sizeof(int), compare_ints);
+ * 
+ * 	// Add elements in random order
+ * 	int input [] = {3, 1, 4, 2, 5, 9, 8, 6, 7};
+ * 	for (int i = 0; i < (int)(sizeof(input) / sizeof(input[0])); ++i) {
+ * 		bstree_insert(bst, &input[i]);
+ * 		printf("Add: %d \n", input[i]);
+ * 	}
+ * 
+ * 	puts("Visiting tree in order:");
+ * 	bstree_visit_in_order(bst, bstree_get_root(bst), visit_int);
+ * 
+ * 	bstree_free(bst);
+ * }
+ * 
+ * static int compare_ints(const void *left, const void *right)
+ * {
+ * 	const int *int_left = (const int *)left;
+ * 	const int *int_right = (const int *)right;
+ * 
+ * 	return (*int_left > *int_right) - (*int_left < *int_right);
+ * }
+ * 
+ * static void visit_int(const void *data)
+ * {
+ *     printf("%d ", *(const int *)data);
+ * }
  * @endcode
+ * The example above shows how to create a binary search tree and fill it
+ * with random data.
+ * When visiting the tree the output is sorted due to the nature of the
+ * binary search tree.
  */
 
-// TODO add example
 
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H

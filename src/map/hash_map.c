@@ -7,6 +7,9 @@
  * I used my dynamic list to store a list of buckets.
  * Each bucket is a doubly linked list that holds key-value pairs.
  * 
+ * When the map grows, no rehashing takes place.
+ * This is a nice feature to have in order to improve performance.
+ * 
  * The implementation uses an opaque pointer to hide the internal structure of the list
  * from users of the API.
  */
@@ -95,8 +98,6 @@ bool hash_map_put(hash_map_t hmap, const void *key, const void *value) {
 	return dllist_push(bucket, &entry);
 }
 
-// TODO hash_map_get() returns a pointer to the value inside the bucket node;
-// User code can hold pointers to internal storage.
 void *hash_map_get(hash_map_t hmap, const void *key) {
 	if (hmap == NULL || key == NULL)
 		return NULL;
